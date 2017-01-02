@@ -1,0 +1,33 @@
+<h1>Извлечь ссылки на товары из каталогов</h1>
+
+<form>
+    <div class="form-group"
+         ng-class="{'has-success' : vm.isCheckedSelector && (vm.foundSelector != ''), 'has-error': vm.isCheckedSelector && (vm.foundSelector == '') }">
+        <label class="control-label" for="selector">Селектор для извлечения ссылок на продукты:</label>
+        <div class="row">
+            <div class="col-md-5">
+                <input type="text" class="form-control" id="selector" name="selector"
+                       ng-model="vm.selector">
+                <div ng-if="vm.isCheckedSelector && (vm.foundSelector == '')" class="help-block">
+                    Данная селектор не найдет
+                </div>
+                <div ng-if="vm.isCheckedSelector && (vm.foundSelector != '')" class="help-block">
+                    Селектор найден.
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-default" ng-click="vm.checkSelector()">Check</button>
+            </div>
+            <div class="col-md-5">
+                {{vm.foundSelector}}
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-default" ng-click="vm.extractProducts()">Извлечь ссылки на товары</button>
+    <a class="btn bnt-default" ng-click="vm.nextStep()">Далее</a>
+    <div>
+        <span ng-repeat="product in vm.products">{{product}}</span>
+    </div>
+
+</form>
+

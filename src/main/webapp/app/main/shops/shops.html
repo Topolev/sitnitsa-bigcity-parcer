@@ -1,0 +1,46 @@
+<h1>Каталог сайтов, предназначенные для парсинга.</h1>
+
+<table class="table table-hover">
+<thead>
+<tr>
+    <th>URL</th>
+    <th>Наименование сайта</th>
+    <th>Статус</th>
+    <th>Дата создания</th>
+    <th>Дата последнего редактирования</th>
+    <th></th>
+</tr>
+</thead>
+<tbody>
+<tr ng-repeat="shop in vm.shops">
+    <td><a href="#/shops/{{shop.id}}">{{shop.url}}</a></td>
+    <td>{{shop.name}}</td>
+    <td>
+        <span class="label label-success" ng-if="shop.status == 'ACTIVE'" ng-click="vm.changeStatus(shop.id)">АКТИВЕН</span>
+        <span class="label label-danger" ng-if="shop.status == 'INACTIVE'" ng-click="vm.changeStatus(shop.id)">ДЕАКТИВИРОВАН</span>
+    </td>
+    <td>{{shop.createdDate | date:'dd/MM/yy HH:mm'}}</td>
+    <td>{{shop.updatedDate | date:'dd/MM/yy HH:mm'}}</td>
+    <th>
+        <div class="btn-group flex-btn-group-container">
+            <button type="submit"
+                    class="btn btn-info btn-sm">
+                <span class="glyphicon glyphicon-eye-open"></span>
+                <!--<span class="hidden-xs hidden-sm">Просмотреть</span>-->
+            </button>
+            <button type="submit"
+                    class="btn btn-primary btn-sm">
+                <span class="glyphicon glyphicon-pencil"></span>
+                <!--<span class="hidden-xs hidden-sm">Редактировать</span>-->
+            </button>
+            <button type="submit"
+                    class="btn btn-danger btn-sm">
+                <span class="glyphicon glyphicon-remove-circle"></span>
+                <!--<span class="hidden-xs hidden-sm">Удалить</span>-->
+            </button>
+        </div>
+
+    </th>
+</tr>
+</tbody>
+</table>

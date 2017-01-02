@@ -1,0 +1,23 @@
+.table{
+    background: #fff;
+}
+
+.table > tbody > tr > td {
+    vertical-align: middle;
+}
+.table > tbody > tr > td > a{
+
+}
+.table > tbody > tr > td > a:hover{
+
+}
+
+.set-buttons{
+    padding-top:10px;
+}
+
+.product-image{
+    max-width:100px;
+    margin: 0 auto;
+    display:block;
+}
