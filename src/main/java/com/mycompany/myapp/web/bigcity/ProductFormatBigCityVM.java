@@ -27,10 +27,10 @@ public class ProductFormatBigCityVM {
     String description;
 
     @JsonInclude(NON_NULL)
-    String price;
+    Long price;
 
     @JsonInclude(NON_NULL)
-    String oldPrice;
+    Long oldPrice;
 
     StatusProduct status;
 
@@ -104,19 +104,19 @@ public class ProductFormatBigCityVM {
         this.description = description;
     }
 
-    public String getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 
-    public String getOldPrice() {
+    public Long getOldPrice() {
         return oldPrice;
     }
 
-    public void setOldPrice(String oldPrice) {
+    public void setOldPrice(Long oldPrice) {
         this.oldPrice = oldPrice;
     }
 

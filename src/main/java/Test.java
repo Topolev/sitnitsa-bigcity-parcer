@@ -1,7 +1,6 @@
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,12 +43,75 @@ public class Test {
         }*/
 
 
-        String str = "10 руб. 50 коп";
-        String integerPart;
-        String fractionalPart;
-        
+
+       /* String str = "    10.5коп";
+
+
+        long result = 0;
+
+        int start = skipNotDigets(str, 0);
+        int finish = skipDigetsOnly(str,start);
+        String integerPart = str.substring(start, finish);
+
+        System.out.println(integerPart);
+        start = skipNotDigets(str, finish);
+        finish = skipDigetsOnly(str,start);
+
+        if (start != finish){
+            String fractionalPart = str.substring(start, finish);
+            result = result + Long.valueOf(integerPart)*10000 + Long.valueOf(fractionalPart)*100;
+        } else{
+            result = result + Long.valueOf(integerPart)*10000;
+        }
+        System.out.println(result);*/
+
+        String str = "10 руб 5 ру";
+
+        /*long result ;
+
+        int start = skipNotDigets(str, 0);
+        int finish = skipDigetsOnly(str,start);
+        String integerPart = str.substring(start, finish);
+
+        start = skipNotDigets(str, finish);
+
+        String delimeter = str.substring(finish, start).trim();
+        boolean isFractionalNumber = delimeter.equals(".") || delimeter.equals(",");
+
+        finish = skipDigetsOnly(str,start);
+
+        if (start != finish){
+            String fractionalPart = str.substring(start, finish);
+            if (isFractionalNumber && fractionalPart.length()==1) fractionalPart = fractionalPart + "0";
+            result = Long.valueOf(integerPart)*10000 + Long.valueOf(fractionalPart)*100;
+        } else{
+            result = Long.valueOf(integerPart)*10000;
+        }
+        System.out.println(result);*/
+
+
+
+
+
 
 
 
     }
+
+    private static Set<Character> digits = new HashSet<>(Arrays.asList('0','1','2','3','4','5','6','7','8','9'));
+    private static int skipNotDigets(String str, int index){
+        while(index < str.length() && !digits.contains(str.charAt(index))){
+            index++;
+        }
+        return index;
+    }
+
+    private static int skipDigetsOnly(String str, int index){
+        while(index < str.length() && digits.contains(str.charAt(index))){
+            index++;
+        }
+        return index;
+    }
+
+
 }

@@ -149,8 +149,8 @@
             <column name="composition" type="varchar(255)"/>
             <column name="summary" type="varchar(255)"/>
             <column name="description" type="text"/>
-            <column name="price" type="varchar(255)"/>
-            <column name="old_price" type="varchar(255)"/>
+            <column name="price" type="bigint"/>
+            <column name="old_price" type="bigint"/>
             <column name="status" type="ENUM('AVAILABLE', 'NOT_AVAILABLE')" defaultValue="AVAILABLE">
                 <constraints nullable="false"/>
             </column>

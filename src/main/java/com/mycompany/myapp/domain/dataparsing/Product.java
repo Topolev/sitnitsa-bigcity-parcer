@@ -30,10 +30,10 @@ public class Product {
     private String description;
 
     @Column(name = "price")
-    private String price;
+    private Long price;
 
     @Column(name = "old_price")
-    private String oldPrice;
+    private Long oldPrice;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
@@ -102,19 +102,19 @@ public class Product {
         this.description = description;
     }
 
-    public String getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 
-    public String getOldPrice() {
+    public Long getOldPrice() {
         return oldPrice;
     }
 
-    public void setOldPrice(String oldPrice) {
+    public void setOldPrice(Long oldPrice) {
         this.oldPrice = oldPrice;
     }
 

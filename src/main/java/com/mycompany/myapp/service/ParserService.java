@@ -7,11 +7,10 @@ import com.mycompany.myapp.domain.enums.StatusProduct;
 import com.mycompany.myapp.domain.rules.RuleExtractCategories;
 import com.mycompany.myapp.domain.rules.RuleExtractProduct;
 import com.mycompany.myapp.domain.rules.RuleExtractProductLink;
-import com.mycompany.myapp.repository.dataparsing.CategoryRepository;
 import com.mycompany.myapp.repository.dataparsing.ShopRepository;
 import com.mycompany.myapp.service.bigcity.ProductLink;
 
-import com.mycompany.myapp.web.rest.vmrules.RuleExtractProductVM;
+import com.mycompany.myapp.service.util.StringBigCityUtil;
 import com.mycompany.myapp.web.rest.vmrules.RulesExtractCategoriesVM;
 import com.mycompany.myapp.web.rest.vmbigcity.SelectorProductField;
 import org.jsoup.nodes.Document;
@@ -24,13 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.mycompany.myapp.service.util.ExternalPageUtil.*;
-import static com.mycompany.myapp.service.util.StringUrlUtil.deleteRootUrl;
-import static com.mycompany.myapp.service.util.StringUrlUtil.deleteSlashFromBeginAndEnd;
+import static com.mycompany.myapp.service.util.StringBigCityUtil.*;
+import static com.mycompany.myapp.service.util.StringBigCityUtil.deleteRootUrl;
+import static com.mycompany.myapp.service.util.StringBigCityUtil.deleteSlashFromBeginAndEnd;
 
 @Service
 public class ParserService {
@@ -153,15 +151,18 @@ public class ParserService {
 
         Optional.ofNullable(wrapProductDOM.select(rules.getSelectorPrice()))
             .map(Elements::first)
-            .ifPresent(element -> product.setPrice(element.ownText()));
+            .ifPresent(element -> product.setPrice(convertStrToPrice(element.ownText())));
 
         Optional.ofNullable(wrapProductDOM.select(rules.getSelectorOldPrice()))
             .map(Elements::first)
-            .ifPresent(element -> product.setOldPrice(element.ownText()));
+            .ifPresent(element -> product.setOldPrice(convertStrToPrice(element.ownText())));
 
         return product;
     }
 
+
+
+/*
     private void handleSelector(SelectorProductField selector, Element wrapProductDOM, Product product, String rootUrl) {
         Element targetElement = wrapProductDOM.getAllElements().select(selector.getSelector()).first();
         switch (selector.getField()) {
@@ -181,7 +182,7 @@ public class ParserService {
             }
         }
 
-    }
+    }*/
 
     private Long convertStringToPrice(String strPrice){
         String integerPart;
