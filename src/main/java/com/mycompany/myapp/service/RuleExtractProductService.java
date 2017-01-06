@@ -40,8 +40,24 @@ public class RuleExtractProductService {
                     target.setSelectorImage(selectorField.getSelector());
                     break;
                 }
+                case "composition":{
+                    target.setSelectorComposition(selectorField.getSelector());
+                    break;
+                }
+                case "summary":{
+                    target.setSelectorSummary(selectorField.getSelector());
+                    break;
+                }
+                case "description":{
+                    target.setSelectorDescription(selectorField.getSelector());
+                    break;
+                }
                 case "price" : {
                     target.setSelectorPrice(selectorField.getSelector());
+                    break;
+                }
+                case "oldprice" : {
+                    target.setSelectorOldPrice(selectorField.getSelector());
                     break;
                 }
             }

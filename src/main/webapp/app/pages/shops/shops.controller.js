@@ -12,6 +12,9 @@
 
         vm.shops = [];
 
+        vm.successUpdateData = undefined;
+        vm.errorUpdateData = undefined;
+
         vm.load = load;
         vm.showShop = showShop;
 
@@ -27,6 +30,28 @@
                 console.log(vm.shops)
             }, function() {
                console.log("Error")
+            });
+        }
+
+        vm.parsingData = function(){
+            $http({
+                method: 'GET',
+                url: '/api/updateData'
+            }).then(function (response) {
+                vm.successUpdateData = true;
+            }, function() {
+                vm.errorUpdateData = true;
+            });
+        }
+
+        vm.parsingShop = function(id){
+            $http({
+                method: 'GET',
+                url: '/api/updateData/' + id
+            }).then(function (response) {
+                vm.successUpdateData = true;
+            }, function() {
+                vm.errorUpdateData = true;
             });
         }
 

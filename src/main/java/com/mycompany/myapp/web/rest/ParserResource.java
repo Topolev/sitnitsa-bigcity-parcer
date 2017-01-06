@@ -100,25 +100,17 @@ public class ParserResource {
 
 
 
-    @Transactional
+
     @RequestMapping(value = "/updateData", method = GET)
-    public ResponseEntity getDataShop(){
-        Shop shop = shopRepository.findOne(1l);
+    public ResponseEntity updateDataShops(){
+        parserService.updateData();
+        return new ResponseEntity(OK);
+    }
 
-        RuleExtractCategories rulesExtractCategories = ruleExtractCategoriesService.getTreeRulesExtractCategoriesBelongsShop(1l);
-        List<Category> categories = parserService.buildCategories(rulesExtractCategories);
-        categoryService.updateCategories(categories);
-
-        RuleExtractProductLink rulesExtractProductLink = ruleExtractProductLinkService.getRuleBelongsShop(1L);
-        List<ProductLink> productLinks = parserService.buildProductLinks(rulesExtractProductLink,categories);
-
-
-        RuleExtractProduct ruleExtractProduct = ruleExtractProductService.getRuleBelongsShop(1L);
-        List<Product> products = parserService.buildProduct(ruleExtractProduct, productLinks);
-        productService.updateProduct(products);
-
-
-        return null;
+    @RequestMapping(value = "/updateData/{id}", method = GET)
+    public ResponseEntity getDataShop(@PathVariable Long id){
+        parserService.updateDataForShop(id);
+        return new ResponseEntity(OK);
     }
 
 

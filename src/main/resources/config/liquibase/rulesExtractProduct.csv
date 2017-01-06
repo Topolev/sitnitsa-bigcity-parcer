@@ -1,6 +1,6 @@
 id;selector_name;selector_price;selector_image;selector_composition;selector_summary;selector_description;selector_oldprice;shop_id
 1;.product-label h1;.price-block span.new;.large-image img;;;;;1
-2;.product-info .product-details h1;.price .price-new;.images-block img.mainAvatar;;;;;2
+2;.product-info .product-details h1;.price .price-new;.images-block img.mainAvatar;.test;.test;#descriptions span p;.price-old;2
 3;h3.itemPage;.secondPrice;#img_item img;;;;;3
 4;h1.product_head;#pip-bel;.pl-main-img img;;;;;4
 5;.heading_title span;.pricetag .price-new;#srcimage img;;;;;5

@@ -268,17 +268,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="control-label">Селектор для извлечения цены товара:</label>
-                    <div class="row">
-                        <div class="col-md-10">
-                            <input type="text" class="form-control" ng-model="vm.ruleExtractProduct.selectorPrice">
-                        </div>
-                        <div class="col-md-2">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
                     <label class="control-label">Селектор для извлечения ссылки на изображение:</label>
                     <div class="row">
                         <div class="col-md-10">
@@ -290,11 +279,67 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label class="control-label">Селектор для извлечения COMPOSITION товара:</label>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" ng-model="vm.ruleExtractProduct.selectorComposition">
+                        </div>
+                        <div class="col-md-2">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Селектор для извлечения SUMMARY товара:</label>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" ng-model="vm.ruleExtractProduct.selectorSummary">
+                        </div>
+                        <div class="col-md-2">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Селектор для извлечения DESCRIPTION товара:</label>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" ng-model="vm.ruleExtractProduct.selectorDescription">
+                        </div>
+                        <div class="col-md-2">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Селектор для извлечения цены товара:</label>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" ng-model="vm.ruleExtractProduct.selectorPrice">
+                        </div>
+                        <div class="col-md-2">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Селектор для извлечения цены товара (OLD PRICE):</label>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" ng-model="vm.ruleExtractProduct.selectorOldPrice">
+                        </div>
+                        <div class="col-md-2">
+                        </div>
+                    </div>
+                </div>
+
+
+
                 <div class="set-buttons">
                     <button class="btn btn-default" ng-click="vm.followToProducts()">Назад</button>
                     <button class="btn btn-default" ng-click="vm.extractProduct()">Извлечь товары</button>
                     <button class="btn btn-default" ng-click="vm.saveRules()">Сохранить правила</button>
-
                 </div>
 
             </div>
@@ -303,13 +348,18 @@
                     <p>Обработано: <strong>{{vm.products.length}}</strong> товаров</p>
                     <div ng-repeat="product in vm.products">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <img ng-src="{{vm.shop.url + product.imageUrl}}" class="product-image">
                             </div>
-                            <div class="col-md-6">
-                                <p>Наименование: {{product.name}}</p>
-                                <p>Цена: {{product.price}}</p>
+                            <div class="col-md-8">
+                                <p>Name: {{product.name}}</p>
                                 <p>Image: {{product.imageUrl}}</p>
+                                <p>Composition: {{product.composition}}</p>
+                                <p>Summary: {{product.summary}}</p>
+                                <p>Descriptiom: {{product.description}}</p>
+                                <p>Price: {{product.price}}</p>
+                                <p>Old Price: {{product.oldPrice}}</p>
+                                <p>Category: {{product.category.name}}</p>
                             </div>
                         </div>
 

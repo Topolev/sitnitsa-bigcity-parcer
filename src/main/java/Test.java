@@ -35,13 +35,20 @@ public class Test {
 */
       /* System.out.println(StringUtils.isBlank(" "));*/
 
-
+/*
         String str = "http://www.buketik.by/cat/alstromeriya_43";
         Pattern p = Pattern.compile("^.*" + "http://www.buketik.by/");
         Matcher m = p.matcher(str);
         if (m.find()){
             System.out.println(str.substring(m.start(), m.end()));
-        }
+        }*/
+
+
+        String str = "10 руб. 50 коп";
+        String integerPart;
+        String fractionalPart;
+        
+
 
 
     }

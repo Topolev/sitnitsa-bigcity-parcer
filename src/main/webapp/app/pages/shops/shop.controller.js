@@ -87,8 +87,22 @@
                          vm.ruleExtractProduct.selectorImage = selector.selector;
                          break;
                      }
+                     case "composition": {
+                         vm.ruleExtractProduct.selectorComposition = selector.selector;
+                         break;
+                     }
+                     case "summary": {
+                         vm.ruleExtractProduct.selectorSummary = selector.selector;
+                     }
+                     case "description": {
+                         vm.ruleExtractProduct.selectorDescription = selector.selector;
+                     }
                      case "price": {
                          vm.ruleExtractProduct.selectorPrice = selector.selector;
+                         break;
+                     }
+                     case "oldprice": {
+                         vm.ruleExtractProduct.selectorOldPrice = selector.selector;
                          break;
                      }
                  }
@@ -183,8 +197,13 @@
                     shop: vm.shop,
                     selectors: [
                         {field: "name", selector: vm.ruleExtractProduct.selectorName},
+                        {field: "image", selector: vm.ruleExtractProduct.selectorImage},
+                        {field: "composition", selector: vm.ruleExtractProduct.selectorComposition},
+                        {field: "summary", selector: vm.ruleExtractProduct.selectorSummary},
+                        {field: "description", selector: vm.ruleExtractProduct.selectorDescription},
                         {field: "price", selector: vm.ruleExtractProduct.selectorPrice},
-                        {field: "image", selector: vm.ruleExtractProduct.selectorImage}]
+                        {field: "oldprice", selector: vm.ruleExtractProduct.selectorOldPrice}
+                    ]
                 }
             }).then(function (response) {
                 console.log("Success");

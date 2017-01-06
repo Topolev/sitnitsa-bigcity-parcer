@@ -32,8 +32,24 @@ public class RuleExtractProductVM {
                     selectors.add(new SelectorProductField(field.nameField, rules.getSelectorImage()));
                     break;
                 }
+                case COMPOSITION:{
+                    selectors.add(new SelectorProductField(field.nameField, rules.getSelectorComposition()));
+                    break;
+                }
+                case SUMMARY:{
+                    selectors.add(new SelectorProductField(field.nameField, rules.getSelectorSummary()));
+                    break;
+                }
+                case DESCRIPTION:{
+                    selectors.add(new SelectorProductField(field.nameField, rules.getSelectorDescription()));
+                    break;
+                }
                 case PRICE: {
                     selectors.add(new SelectorProductField(field.nameField, rules.getSelectorPrice()));
+                    break;
+                }
+                case OLDPRICE:{
+                    selectors.add(new SelectorProductField(field.nameField, rules.getSelectorOldPrice()));
                 }
             }
         }

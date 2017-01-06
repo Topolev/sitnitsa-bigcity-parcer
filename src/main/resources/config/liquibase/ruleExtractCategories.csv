@@ -15,5 +15,4 @@ id;selector;parent_id;shop_id
 14;.item-111 .sub-menu > li;null;7
 15;.navbar-menu .navbar-collapse > ul;null;8
 16;ul>li;15;8
-17;#mainpageCategories;null;9
 

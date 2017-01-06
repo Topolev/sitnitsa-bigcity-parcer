@@ -15,6 +15,7 @@ public class ProductService {
     @Inject
     private ProductRepository productRepository;
 
+
     @Transactional
     public List<Product> updateProduct(List<Product> products){
         if ((products == null) || products.isEmpty()){
@@ -26,9 +27,5 @@ public class ProductService {
 
         return productRepository.save(products);
     }
-
-
-
-
 
 }

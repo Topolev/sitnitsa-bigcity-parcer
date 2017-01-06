@@ -20,11 +20,13 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.mycompany.myapp.service.util.ExternalPageUtil.*;
 import static com.mycompany.myapp.service.util.StringUrlUtil.deleteRootUrl;
@@ -36,21 +38,20 @@ public class ParserService {
     private static final Logger LOG = LoggerFactory.getLogger(ParserService.class);
 
     @Inject
-    private CategoryRepository categoryRepository;
-
+    private RuleExtractCategoriesService ruleExtractCategoriesService;
     @Inject
-    private CategoryService categoryService;
+    private RuleExtractProductLinkService ruleExtractProductLinkService;
+    @Inject
+    private RuleExtractProductService ruleExtractProductService;
 
     @Inject
     private ShopRepository shopRepository;
+    @Inject
+    private CategoryService categoryService;
+    @Inject
+    private ProductService productService;
 
-    private Category extractCategoryFrom(Element wrap, String rootUrl, Shop shop) {
-        Elements elementsByTagA = wrap.getAllElements().select("a");
-        Element element = elementsByTagA.get(0);
-        String nameCategory = element.ownText();
-        String href = deleteSlashFromBeginAndEnd(deleteRootUrl(rootUrl, element.attr("href")));
-        return new Category(nameCategory, deleteSlashFromBeginAndEnd(href), shop);
-    }
+
 
     public List<Category> buildCategories(RuleExtractCategories rules) {
         List<Category> categories = new ArrayList<>();
@@ -116,20 +117,47 @@ public class ParserService {
         return products;
     }
 
-
+    private Category extractCategoryFrom(Element wrap, String rootUrl, Shop shop) {
+        Elements elementsByTagA = wrap.getAllElements().select("a");
+        Element element = elementsByTagA.get(0);
+        String nameCategory = element.ownText();
+        String href = deleteSlashFromBeginAndEnd(deleteRootUrl(rootUrl, element.attr("href")));
+        return new Category(nameCategory, deleteSlashFromBeginAndEnd(href), shop);
+    }
 
     private Product extractProductFrom(Element wrapProductDOM, RuleExtractProduct rules, String rootUrl){
         Product product = new Product();
 
-        Element nameProductDOM = wrapProductDOM.select(rules.getSelectorName()).first();
-        product.setName(nameProductDOM.ownText());
+        Optional.ofNullable(wrapProductDOM.select(rules.getSelectorName()))
+            .map(Elements::first)
+            .ifPresent(element -> product.setName(element.ownText()));
 
-        Element priceProductDOM = wrapProductDOM.select(rules.getSelectorPrice()).first();
-        product.setPrice(priceProductDOM.ownText());
+        Optional.ofNullable(wrapProductDOM.select(rules.getSelectorImage()))
+            .map(Elements::first)
+            .ifPresent(element -> {
+                String src = deleteSlashFromBeginAndEnd(deleteRootUrl(rootUrl, element.attr("src")));
+                product.setImageUrl(src);
+            });
 
-        Element imageProductDOM = wrapProductDOM.select(rules.getSelectorImage()).first();
-        String src = deleteSlashFromBeginAndEnd(deleteRootUrl(rootUrl, imageProductDOM.attr("src")));
-        product.setImageUrl(src);
+        Optional.ofNullable(wrapProductDOM.select(rules.getSelectorComposition()))
+            .map(Elements::first)
+            .ifPresent(element -> product.setComposition(element.ownText()));
+
+        Optional.ofNullable(wrapProductDOM.select(rules.getSelectorSummary()))
+            .map(Elements::first)
+            .ifPresent(element -> product.setSummary(element.ownText()));
+
+        Optional.ofNullable(wrapProductDOM.select(rules.getSelectorDescription()))
+            .map(Elements::first)
+            .ifPresent(element -> product.setDescription(element.text()));
+
+        Optional.ofNullable(wrapProductDOM.select(rules.getSelectorPrice()))
+            .map(Elements::first)
+            .ifPresent(element -> product.setPrice(element.ownText()));
+
+        Optional.ofNullable(wrapProductDOM.select(rules.getSelectorOldPrice()))
+            .map(Elements::first)
+            .ifPresent(element -> product.setOldPrice(element.ownText()));
 
         return product;
     }
@@ -153,6 +181,15 @@ public class ParserService {
             }
         }
 
+    }
+
+    private Long convertStringToPrice(String strPrice){
+        String integerPart;
+        String fractionalPart;
+        for (int i = 0; i < strPrice.length(); i++){
+
+        }
+        return null;
     }
 
     private void buildChildrenCategory(Element wrapDOM, Category parentCategory, RuleExtractCategories extractCategoryRule, Shop shop) {
@@ -189,6 +226,30 @@ public class ParserService {
             }
         }
         return result;
+    }
+
+
+    @Transactional
+    public void updateData(){
+        List<Shop> shops = shopRepository.findAvailableShop();
+        for (Shop shop : shops) {
+            updateDataForShop(shop.getId());
+        }
+    }
+
+    @Transactional
+    public void updateDataForShop(Long id){
+        RuleExtractCategories rulesExtractCategories = ruleExtractCategoriesService.getTreeRulesExtractCategoriesBelongsShop(id);
+        List<Category> categories = buildCategories(rulesExtractCategories);
+        categoryService.updateCategories(categories);
+
+        RuleExtractProductLink rulesExtractProductLink = ruleExtractProductLinkService.getRuleBelongsShop(id);
+        List<ProductLink> productLinks = buildProductLinks(rulesExtractProductLink,categories);
+
+
+        RuleExtractProduct ruleExtractProduct = ruleExtractProductService.getRuleBelongsShop(id);
+        List<Product> products = buildProduct(ruleExtractProduct, productLinks);
+        productService.updateProduct(products);
     }
 
 }

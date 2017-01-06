@@ -6,7 +6,11 @@ package com.mycompany.myapp.domain.enums;
 public enum ProductFields {
     NAME("name"),
     IMAGE("image"),
-    PRICE("price");
+    COMPOSITION("composition"),
+    SUMMARY("summary"),
+    DESCRIPTION("description"),
+    PRICE("price"),
+    OLDPRICE("oldprice");
 
     private ProductFields(String nameField) {
         this.nameField = nameField;

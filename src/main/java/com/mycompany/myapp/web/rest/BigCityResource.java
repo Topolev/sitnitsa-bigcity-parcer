@@ -1,6 +1,7 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.dataparsing.Shop;
+import com.mycompany.myapp.domain.enums.StatusShop;
 import com.mycompany.myapp.repository.dataparsing.ProductRepository;
 import com.mycompany.myapp.repository.dataparsing.ShopRepository;
 
@@ -37,6 +38,10 @@ public class BigCityResource {
     @RequestMapping(value = "/infoShop/{id}", method = GET, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity extractCategories(@PathVariable Long id) {
         Shop shop = shopRepository.findOne(id);
+
+        if (shop == null || shop.getStatus() == StatusShop.INACTIVE){
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
 
         List<CategoryFormatBigCityVM> categories = categoryService.getCategoriesBelongsShop(id).stream()
             .map(CategoryFormatBigCityVM::new)

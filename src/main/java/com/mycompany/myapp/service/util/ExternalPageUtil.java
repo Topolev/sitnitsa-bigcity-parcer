@@ -30,7 +30,7 @@ public class ExternalPageUtil {
         try{
             in = new BufferedReader(new InputStreamReader(connection.getInputStream(),encoding));
         } catch (UnsupportedEncodingException e){
-            LOG.debug("Problem with extract encoding. Applying the UTF8.", e);
+            LOG.debug("Problem with extract encoding in page '{}'. Applying the UTF8.", urlString, e);
             in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         }
         String inputLine;
