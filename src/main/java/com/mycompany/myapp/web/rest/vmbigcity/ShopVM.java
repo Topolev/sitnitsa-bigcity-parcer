@@ -14,6 +14,7 @@ public class ShopVM {
     private String name;
     private String url;
     private StatusShop status;
+    private String urlToGetShopInfo;
     private ZonedDateTime createdDate;
     private ZonedDateTime updatedDate;
 
@@ -30,6 +31,7 @@ public class ShopVM {
         this.status = status;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
+        this.urlToGetShopInfo = "/infoShop/" + id;
 
     }
 
@@ -79,5 +81,13 @@ public class ShopVM {
 
     public void setUpdatedDate(ZonedDateTime updatedDate) {
         this.updatedDate = updatedDate;
+    }
+
+    public String getUrlToGetShopInfo() {
+        return urlToGetShopInfo;
+    }
+
+    public void setUrlToGetShopInfo(String urlToGetShopInfo) {
+        this.urlToGetShopInfo = urlToGetShopInfo;
     }
 }

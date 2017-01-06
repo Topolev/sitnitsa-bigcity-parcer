@@ -3,7 +3,6 @@ package com.mycompany.myapp.web.bigcity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.mycompany.myapp.domain.dataparsing.Product;
 import com.mycompany.myapp.domain.enums.StatusProduct;
-import com.mycompany.myapp.web.rest.entitybigcity.ItemStatus;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
