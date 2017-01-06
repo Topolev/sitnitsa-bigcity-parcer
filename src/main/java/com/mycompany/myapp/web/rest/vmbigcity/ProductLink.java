@@ -1,7 +1,7 @@
 package com.mycompany.myapp.web.rest.vmbigcity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mycompany.myapp.web.rest.entitybigcity.Category;
+import com.mycompany.myapp.domain.dataparsing.Category;
 import org.jsoup.nodes.Element;
 
 /**

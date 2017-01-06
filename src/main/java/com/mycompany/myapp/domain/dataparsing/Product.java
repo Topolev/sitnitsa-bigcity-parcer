@@ -6,12 +6,13 @@ import com.mycompany.myapp.domain.enums.StatusProduct;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "products")
+@Table(name = "product")
 public class Product {
+
     @Id
     @GeneratedValue
-    @Column(name="external_id")
-    private Long externalId;
+    @Column(name="id")
+    private Long id;
 
     @Column(name = "name")
     private String name;
@@ -29,10 +30,10 @@ public class Product {
     private String description;
 
     @Column(name = "price")
-    private Long price;
+    private String price;
 
     @Column(name = "old_price")
-    private Long oldPrice;
+    private String oldPrice;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
@@ -41,8 +42,9 @@ public class Product {
     @Column(name = "priority")
     private Long priority;
 
-    @Column(name = "category_external_id")
-    private String categoryExternalId;
+    @OneToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @ManyToOne
     @JoinColumn(name = "shop_id")
@@ -52,12 +54,12 @@ public class Product {
 
     public Product(){}
 
-    public Long getExternalId() {
-        return externalId;
+    public Long getId() {
+        return id;
     }
 
-    public void setExternalId(Long externalId) {
-        this.externalId = externalId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -100,19 +102,19 @@ public class Product {
         this.description = description;
     }
 
-    public Long getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(Long price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
-    public Long getOldPrice() {
+    public String getOldPrice() {
         return oldPrice;
     }
 
-    public void setOldPrice(Long oldPrice) {
+    public void setOldPrice(String oldPrice) {
         this.oldPrice = oldPrice;
     }
 
@@ -132,12 +134,12 @@ public class Product {
         this.priority = priority;
     }
 
-    public String getCategoryExternalId() {
-        return categoryExternalId;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setCategoryExternalId(String categoryExternalId) {
-        this.categoryExternalId = categoryExternalId;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public Shop getShop() {

@@ -1,81 +1,66 @@
 package com.mycompany.myapp.service;
 
 import com.mycompany.myapp.domain.dataparsing.Category;
-import com.mycompany.myapp.domain.dataparsing.Shop;
 import com.mycompany.myapp.repository.dataparsing.CategoryRepository;
-import com.mycompany.myapp.repository.dataparsing.ShopRepository;
-
-import com.mycompany.myapp.service.bigcity.CategoryFormatBigCity;
-import com.mycompany.myapp.web.rest.vmbigcity.CategoryVM;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class CategoryService {
-
     @Inject
-    ShopRepository shopRepository;
+    private CategoryRepository categoryRepository;
 
-    @Inject
-    CategoryRepository categoryRepository;
+
+
+
+
+    public List<Category> getCategoriesBelongsShop(Long idShop){
+        return categoryRepository.findAllBelongsShop(idShop).stream()
+            .filter(cat -> cat.getParent() == null)
+            .collect(toList());
+    }
+
+    public List<Category> createNewCategories(List<Category> categories){
+        return categoryRepository.save(categories);
+    }
 
     @Transactional
-    public void saveCategories(List<CategoryVM> categories, Long shopId) {
-        Shop shop = shopRepository.findOne(shopId);
-        categories
-            .forEach(cat ->{
-                Category category = toCategory(cat, shop);
-                categoryRepository.save(category);
-            });
-    }
-
-    public void extractCategoriesBy(Long shopId){
-        Shop shop = shopRepository.findOne(shopId);
-
-    }
-
-    private Category toCategory(CategoryVM categoryVM, Shop shop) {
-        Category category = new Category();
-        category.setStringId(categoryVM.getExternalId());
-        category.setName(categoryVM.getName());
-        category.setOriginUrl(categoryVM.getOriginalUrl());
-        category.setParentId(categoryVM.getIdParent());
-        category.setShop(shop);
-        return category;
-    }
-
-    public List<CategoryFormatBigCity> convertToFormatBigCity(List<Category> categories){
-        List<CategoryFormatBigCity> categoriesFormatBigCity = new ArrayList<>();
-        for (Category category : categories){
-            CategoryFormatBigCity categoryFormatBigCity = new CategoryFormatBigCity();
-            categoryFormatBigCity.setExternalId(category.getStringId());
-            categoryFormatBigCity.setName(category.getName());
-            categoryFormatBigCity.setCategory(category);
-            categoriesFormatBigCity.add(categoryFormatBigCity);
+    public List<Category> updateCategories(List<Category> categories){
+        if ((categories == null) || categories.isEmpty()){
+            return Collections.emptyList();
         }
+        Long idShop = categories.get(0).getShop().getId();
+        List<Category> deletedCategories = categoryRepository.findAllBelongsShop(idShop);
+        categoryRepository.delete(deletedCategories);
+        return createNewCategories(categories);
+    }
 
-
-        List<CategoryFormatBigCity> result = new ArrayList<>();
-        for (CategoryFormatBigCity categoryFormatBigCity :categoriesFormatBigCity){
-            Category category = categoryFormatBigCity.getCategory();
-            String parentId = category.getParentId();
-            if (parentId == null){
-                result.add(categoryFormatBigCity);
-            } else {
-                categoriesFormatBigCity.stream()
-                    .filter(cat -> cat.getExternalId().equals(parentId))
-                    .findFirst()
-                    .ifPresent(parent -> parent.addSubCategory(categoryFormatBigCity));
+    public List<Category> getCategoriesWithoutChildren(List<Category> categories){
+        List<Category> categoriesWithoutChildren = new ArrayList<>();
+        for (Category category : categories){
+            if (category.getChildren() == null || category.getChildren().isEmpty()){
+                categoriesWithoutChildren.add(category);
+            } else{
+                searchCategoryWithoutChildren(category.getChildren(), categoriesWithoutChildren);
             }
         }
-
-        return result;
+        return categoriesWithoutChildren;
     }
 
-
-
+    private void searchCategoryWithoutChildren(List<Category> categories, List<Category> categoriesWithoutChildren){
+        for (Category category : categories){
+            if (category.getChildren() == null || category.getChildren().isEmpty()){
+                categoriesWithoutChildren.add(category);
+            } else{
+                searchCategoryWithoutChildren(category.getChildren(), categoriesWithoutChildren);
+            }
+        }
+    }
 }

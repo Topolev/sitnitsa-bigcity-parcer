@@ -1,11 +1,11 @@
 id;selector_name;selector_price;selector_image;selector_composition;selector_summary;selector_description;selector_oldprice;shop_id
-1;.product-details h1;.price-new small;.images-block .mainAvatar;composition;summary;description;old;1
-2;.itemBlock > h3;.firstPrice;#item_img;composition;summary;description;old;2
-4;div.text h1;.shk-price;.text_left a img;;;;;4
-5;#page_title h1;#variant_price;#product_main_img img;;;;;5
-6;.productfull h1;#block_price;.slides li:first-child a img;;;.jshop_prod_description;;6
-7;.detail-column h1;.detail-sales-price;.main-image a img;;;.detail-preview-text;;7
-8;#content h1;.fprod_price;.fprod_imgb a img;;;.consist span span;;8
-9;.product-label h1;.price-block span;.large-image img;;;;;9
-10;#body_text h1;.okas;.zoom-small-image a img;;;;;10
+1;.product-label h1;.price-block span.new;.large-image img;;;;;1
+2;.product-info .product-details h1;.price .price-new;.images-block img.mainAvatar;;;;;2
+3;h3.itemPage;.secondPrice;#img_item img;;;;;3
+4;h1.product_head;#pip-bel;.pl-main-img img;;;;;4
+5;.heading_title span;.pricetag .price-new;#srcimage img;;;;;5
+6;.page-header;.views-field-commerce-price .field-content;.field-slideshow-wrapper img;;;;;6
+7;.productfull h1;#block_price;.slides li a img;;;;;7
+8;h1.product-page-name;.price-new;.product-page-photo a img;;;;;8
+
 

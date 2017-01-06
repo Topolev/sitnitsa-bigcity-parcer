@@ -1,6 +1,5 @@
 package com.mycompany.myapp.repository.dataparsing;
 
-import com.mycompany.myapp.domain.dataparsing.Category;
 import com.mycompany.myapp.domain.dataparsing.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

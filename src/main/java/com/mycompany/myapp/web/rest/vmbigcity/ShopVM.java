@@ -1,4 +1,4 @@
-package com.mycompany.myapp.web.rest.vm;
+package com.mycompany.myapp.web.rest.vmbigcity;
 
 import com.mycompany.myapp.domain.dataparsing.Shop;
 import com.mycompany.myapp.domain.enums.StatusShop;
@@ -16,6 +16,8 @@ public class ShopVM {
     private StatusShop status;
     private ZonedDateTime createdDate;
     private ZonedDateTime updatedDate;
+
+    public ShopVM(){}
 
     public ShopVM(Shop shop){
         this(shop.getId(), shop.getName(), shop.getUrl(), shop.getStatus(), shop.getCreatedDate(), shop.getUpdatedDate());

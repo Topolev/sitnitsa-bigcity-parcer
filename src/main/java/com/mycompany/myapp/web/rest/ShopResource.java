@@ -3,7 +3,7 @@ package com.mycompany.myapp.web.rest;
 import com.mycompany.myapp.domain.dataparsing.Shop;
 import com.mycompany.myapp.domain.enums.StatusShop;
 import com.mycompany.myapp.repository.dataparsing.ShopRepository;
-import com.mycompany.myapp.web.rest.vm.ShopVM;
+import com.mycompany.myapp.web.rest.vmbigcity.ShopVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

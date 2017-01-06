@@ -2,6 +2,10 @@ package com.mycompany.myapp.service.util;
 
 import org.apache.commons.lang3.StringUtils;
 
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by Vladimir on 28.12.2016.
  */
@@ -29,6 +33,15 @@ public class StringUrlUtil {
             return text.substring(text.indexOf(prefix) + prefix.length(), text.length() - 1);
         }
         return text;
+    }
+
+    public static String deleteRootUrl(String rootUrl, String currentUrl){
+        Pattern p = Pattern.compile("^.*" + rootUrl);
+        Matcher m = p.matcher(currentUrl);
+        if (m.find()){
+            currentUrl = currentUrl.substring(m.end());
+        }
+        return currentUrl;
     }
 
     public static String deleteExtension(String text){

@@ -1,50 +1,55 @@
 package com.mycompany.myapp.domain.dataparsing;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "categories")
-public class Category {
+@Table(name = "category")
+public class Category implements Serializable {
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @Column(name = "string_id")
-    private String stringId;
-
     @Column(name = "name")
     private String name;
 
-    @Column(name = "original_url")
-    private String originUrl;
+    @Column(name = "href")
+    private String href;
 
-    @Column(name = "parent_id")
-    private String parentId;
+    @Column(name = "priority")
+    private Long priority;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Category parent;
+
+    @OneToMany(mappedBy = "parent", cascade={CascadeType.PERSIST})
+    private List<Category> children;
 
     @ManyToOne
-    @JoinColumn(name = "shop_id")
+    @JoinColumn(name = "shop_id", nullable = false)
     private Shop shop;
 
-    public Category(){}
 
-
-
-    public Long getId() {
-        return id;
+    public Category() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Category(String name, String href) {
+        this.name = name;
+        this.href = href;
     }
 
-    public String getStringId() {
-        return stringId;
+    public Category(String name, String href, Shop shop){
+        this(name, href);
+        this.shop = shop;
     }
 
-    public void setStringId(String stringId) {
-        this.stringId = stringId;
-    }
 
     public String getName() {
         return name;
@@ -54,20 +59,43 @@ public class Category {
         this.name = name;
     }
 
-    public String getOriginUrl() {
-        return originUrl;
+    public String getHref() {
+        return href;
     }
 
-    public void setOriginUrl(String originUrl) {
-        this.originUrl = originUrl;
+    public void setHref(String href) {
+        this.href = href;
     }
 
-    public String getParentId() {
-        return parentId;
+    public Category getParent() {
+        return parent;
     }
 
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
+    public void setParent(Category parent) {
+        this.parent = parent;
+    }
+
+    public List<Category> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Category> children) {
+        this.children = children;
+    }
+
+    public void addChild(Category child) {
+        if (children == null) {
+            children = new ArrayList<>();
+        }
+        children.add(child);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Shop getShop() {
@@ -77,7 +105,12 @@ public class Category {
     public void setShop(Shop shop) {
         this.shop = shop;
     }
+
+    public Long getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Long priority) {
+        this.priority = priority;
+    }
 }
-
-
-
