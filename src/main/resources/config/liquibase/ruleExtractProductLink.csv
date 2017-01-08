@@ -1,11 +1,17 @@
-id;selector;shop_id
-1;.product-preview .title a;1
-2;.product-col .caption .product-seo a;2
-3;.itemsRow h3 a;3
-4;.product-for-hover .pi-title a;4
-5;.prod_hold .name a;5
-6;.views-row .icon_title a;6
-7;.block_product .name a;7
-8;.thumbnail .caption a;8
+id;selector;paginator_template;paginator_start_page;paginator_step_change;shop_id
+1;.product-preview .title a;;null;null;1
+2;.product-col .caption .product-seo a;?page={d};1;1;2
+3;.itemsRow h3 a;?page_size=10&page_id={d};1;1;3
+4;.product-for-hover .pi-title a;?page={d};1;1;4
+5;.prod_hold .name a;?page={d};1;1;5
+6;.views-row .icon_title a;;null;null;6
+7;.block_product .name a;;null;null;7
+8;.thumbnail .caption a;;null;null;8
+9;.products li a;/page/;null;null;9
+10;.tvr .test a;/?PAGEN_1={d};1;1;10
+11;.item h3 a;/page:{d}/pcnt:24;null;null;11
+12;.catalog_item .item-title a;?show=20&PAGEN_1=;null;null;12
+13;.catalog__item a;;null;null;13
+14;.shk-item a:first-child;;null;null;14
 
 

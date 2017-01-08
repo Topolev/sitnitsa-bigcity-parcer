@@ -15,4 +15,15 @@ id;selector;parent_id;shop_id
 14;.item-111 .sub-menu > li;null;7
 15;.navbar-menu .navbar-collapse > ul;null;8
 16;ul>li;15;8
+17;.product-categories>li;null;9
+18;#leftcatalog>ul>li;null;10
+19;ul>li;18;10
+20;#sidebar-catalog>ul>li;null;11
+21;ul>li;20;11
+22;.catalog li.menu_item;null;12
+23;.product-nav__list>li>div;null;13
+24;ul>div;23;13
+25;ul>li;24;13
+26;ul.l_menu >li;null;14
+27;#cbp-hrmenu ul li;null;15
 

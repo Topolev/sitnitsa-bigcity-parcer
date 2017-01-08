@@ -7,5 +7,11 @@ id;selector_name;selector_price;selector_image;selector_composition;selector_sum
 6;.page-header;.views-field-commerce-price .field-content;.field-slideshow-wrapper img;;;;;6
 7;.productfull h1;#block_price;.slides li a img;;;;;7
 8;h1.product-page-name;.price-new;.product-page-photo a img;;;;;8
+9;.product_title;.price span;.images a img;;;#tab-description p;;9
+10;#body_text h1;span[itemprop="price"] span.okas:not(.byr);.catalog-detail-image img;;;.catalog-detail-full-desc;;10
+11;.desc h1;.n-price;#product-image-main a img;;;.desc p;;11
+12;.container h1;.price_block:nth-child(2) .price;.slides li a img;;;.detail_text;;12
+13;.title h1;;.slides li a img;;;.card-product__info-text;;13
+14;.text h1;.shk-price;.fancybox img;;;.description;;14
 
 

@@ -59,6 +59,9 @@ public class StringBigCityUtil {
 
 
     public static Long convertStrToPrice(String str){
+        if (StringUtils.isBlank(str)){
+            return null;
+        }
         long result;
 
         int start = skipNotDigets(str, 0);
@@ -72,6 +75,7 @@ public class StringBigCityUtil {
 
         finish = skipDigetsOnly(str,start);
 
+        LOG.debug("Convert str {}", str);
         if (start != finish){
             String fractionalPart = str.substring(start, finish);
             if (isFractionalNumber && fractionalPart.length()==1) fractionalPart = fractionalPart + "0";

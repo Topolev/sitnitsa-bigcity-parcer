@@ -66,76 +66,6 @@
                     <button class="btn btn-default" ng-click="vm.followToProducts()">Далее</button>
                 </div>
 
-                <!--
-
-                                <div class="form-group">
-                                    <label class="control-label">Префикс URL каталога:</label>
-                                    <div class="row">
-                                        <div class="col-md-10">
-                                            <div class="input-group">
-                                                <span class="input-group-addon">{{vm.shop.url}}</span>
-                                                <input type="text" class="form-control" ng-model="vm.rulesextractcategories.prefix">
-                                            </div>
-                                            <div class="help-block">
-                                                Если в ссылках на категории каталога имеется неизменный префикс, то укажите его. Префикс
-                                                можно
-                                                определить проанализировав две ссылки, например,
-                                                для ссылок http://belysad.by/catalog/monobukety и http://belysad.by/catalog/korobki
-                                                префиксом является
-                                                catalog.
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="control-label">URL для исключения:</label>
-                                    <div class="row">
-                                        <div class="col-md-10">
-                                            <div class="input-group">
-                                                <span class="input-group-addon">{{vm.shop.url}}</span>
-                                                <input type="text" class="form-control"
-                                                       ng-model="vm.rulesextractcategories.excludeUrls">
-                                            </div>
-                                            <div class="help-block">
-                                                Если среди отобранных ссылок на категорию могут оказаться ссылки, которые необходимо
-                                                исключить, то задайте их через ";". Например, если вы хотите исключить две следующие
-                                                ссылки
-                                                http://gvozdika.by/katalog/poleznyie-stati.html и
-                                                http://gvozdika.by/katalog/unnecceray.html, то
-                                                введите в поле следующие значение: katalog/poleznyie-stati.html;
-                                                katalog/unnecceray.html.
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="control-label">Селектор для извлечения категорий:</label>
-                                    <div class="row">
-                                        <div class="col-md-10">
-                                            <input type="text" class="form-control" ng-model="vm.rulesextractcategories.selector">
-                                            <div class="help-block">
-                                            Если одним селектором не возможно охватить все ссылки на категории, то задайте их через запятую ",". Например,
-                                                на сайте http://byket24.by/ не возможно охватить одним селектором все категории, то в данном случае заполните
-                                                поле следующим: .slide_tit a,.slide_cont ul li a. Перед и после запятой не должно быть пробелов.
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button class="btn btn-default" ng-click="vm.extractCategories()">Check</button>
-                                        </div>
-                                    </div>
-                                    <div class="set-buttons">
-                                        <button class="btn btn-default" ng-click="vm.followToShop()">Назад</button>
-                                        <button class="btn btn-default" ng-click="vm.followToProducts()">Далее</button>
-                                    </div>
-                                </div>
-                -->
-
             </div>
 
 
@@ -168,36 +98,29 @@
                 <div class="form-group">
                     <label>Селектор для извлечения ссылок на товары:</label>
                     <input type="text" class="form-control" ng-model="vm.ruleExtractProductLink.selector">
-                    <!--
-                    <p class="help-block">Примечание: если выбрана галочка снизу, то в данном поле должен быть оберточный селектор всего товара</p>
-                    <div><input type="checkbox" ng-model="vm.extractProductOnCategoryPage"/>Извлечь данные о товаре на
-                        странице перечня ссылок товаров
-                    </div>-->
                 </div>
 
-                <!--
-                <div ng-if="vm.extractProductOnCategoryPage" class="form-horizontal">
+                <div class="form-horizontal">
+                    <label>ПАГИНАТОР</label>
                     <div class="form-group">
-                        <label class="col-sm-4 control-label">Наименование товара</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" ng-model="vm.rulesextractproduct.selectorName">
+                        <label class="col-sm-5 control-label">Шаблон пагинатора</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" ng-model="vm.ruleExtractProductLink.paginatorTemplate">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-4 control-label">Цена товара</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" ng-model="vm.rulesextractproduct.selectorPrice">
+                        <label class="col-sm-5 control-label">Селектор для вычисления количества страниц пагинатора</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" ng-model="vm.ruleExtractProductLink.paginatorStartPage">
                         </div>
                     </div>
-
                     <div class="form-group">
-                        <label class="col-sm-4 control-label">Ссылка на изображение</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" ng-model="vm.rulesextractproduct.selectorImage">
+                        <label class="col-sm-5 control-label">Селектор для вычисления количества страниц пагинатора</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" ng-model="vm.ruleExtractProductLink.paginatorStepChange">
                         </div>
                     </div>
                 </div>
-                -->
 
                 <div class="set-buttons">
                     <button class="btn btn-default" ng-click="vm.followToCategories()">Назад</button>

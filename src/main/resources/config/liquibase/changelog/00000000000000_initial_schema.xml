@@ -71,6 +71,9 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="selector" type="varchar(255)"/>
+            <column name="paginator_template" type="varchar(255)"/>
+            <column name="paginator_start_page" type="bigint"/>
+            <column name="paginator_step_change" type="bigint"/>
             <column name="shop_id" type="bigint">
                 <constraints nullable="false"/>
             </column>

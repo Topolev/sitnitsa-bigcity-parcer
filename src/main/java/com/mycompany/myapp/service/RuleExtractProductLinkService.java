@@ -34,6 +34,9 @@ public class RuleExtractProductLinkService {
         shop.setId(source.getShop().getId());
 
         target.setSelector(source.getSelector());
+        target.setPaginatorTemplate(source.getPaginatorTemplate());
+        target.setPaginatorStartPage(source.getPaginatorStartPage());
+        target.setPaginatorStepChange(source.getPaginatorStepChange());
         target.setShop(shop);
 
         return target;

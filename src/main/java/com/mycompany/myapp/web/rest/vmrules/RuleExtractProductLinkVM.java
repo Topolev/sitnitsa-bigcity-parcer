@@ -10,6 +10,9 @@ public class RuleExtractProductLinkVM {
 
     private ShopVM shop;
     private String selector;
+    private String paginatorTemplate;
+    private Long paginatorStartPage;
+    private Long paginatorStepChange;
 
 
     public RuleExtractProductLinkVM() {
@@ -18,6 +21,9 @@ public class RuleExtractProductLinkVM {
     public RuleExtractProductLinkVM(RuleExtractProductLink rules) {
         shop = new ShopVM(rules.getShop());
         selector = rules.getSelector();
+        paginatorTemplate = rules.getPaginatorTemplate();
+        paginatorStartPage = rules.getPaginatorStartPage();
+        paginatorStepChange = rules.getPaginatorStepChange();
     }
 
     public ShopVM getShop() {
@@ -36,5 +42,27 @@ public class RuleExtractProductLinkVM {
         this.selector = selector;
     }
 
+    public String getPaginatorTemplate() {
+        return paginatorTemplate;
+    }
 
+    public void setPaginatorTemplate(String paginatorTemplate) {
+        this.paginatorTemplate = paginatorTemplate;
+    }
+
+    public Long getPaginatorStartPage() {
+        return paginatorStartPage;
+    }
+
+    public void setPaginatorStartPage(Long paginatorStartPage) {
+        this.paginatorStartPage = paginatorStartPage;
+    }
+
+    public Long getPaginatorStepChange() {
+        return paginatorStepChange;
+    }
+
+    public void setPaginatorStepChange(Long paginatorStepChange) {
+        this.paginatorStepChange = paginatorStepChange;
+    }
 }

@@ -169,7 +169,10 @@
                 url: '/api/extractProductLinks',
                 data: {
                     shop: vm.shop,
-                    selector: vm.ruleExtractProductLink.selector
+                    selector: vm.ruleExtractProductLink.selector,
+                    paginatorTemplate: vm.ruleExtractProductLink.paginatorTemplate,
+                    paginatorStartPage: vm.ruleExtractProductLink.paginatorStartPage,
+                    paginatorStepChange: vm.ruleExtractProductLink.paginatorStepChange
                 }
             }).then(function (response) {
                 console.log("Success");

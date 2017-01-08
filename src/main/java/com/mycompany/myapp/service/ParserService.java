@@ -13,6 +13,7 @@ import com.mycompany.myapp.service.bigcity.ProductLink;
 import com.mycompany.myapp.service.util.StringBigCityUtil;
 import com.mycompany.myapp.web.rest.vmrules.RulesExtractCategoriesVM;
 import com.mycompany.myapp.web.rest.vmbigcity.SelectorProductField;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -20,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -29,6 +31,7 @@ import static com.mycompany.myapp.service.util.ExternalPageUtil.*;
 import static com.mycompany.myapp.service.util.StringBigCityUtil.*;
 import static com.mycompany.myapp.service.util.StringBigCityUtil.deleteRootUrl;
 import static com.mycompany.myapp.service.util.StringBigCityUtil.deleteSlashFromBeginAndEnd;
+import static org.apache.commons.lang3.StringUtils.*;
 
 @Service
 public class ParserService {
@@ -48,7 +51,6 @@ public class ParserService {
     private CategoryService categoryService;
     @Inject
     private ProductService productService;
-
 
 
     public List<Category> buildCategories(RuleExtractCategories rules) {
@@ -72,30 +74,56 @@ public class ParserService {
     }
 
 
-    public List<ProductLink> buildProductLinks(RuleExtractProductLink rules, List<Category> categories) {
+    public List<ProductLink> buildProductLinks(RuleExtractProductLink rules, List<Category> categories, boolean isTest) {
         List<ProductLink> productLinks = new ArrayList<>();
         List<Category> categoriesWithoutChildren = categoryService.getCategoriesWithoutChildren(categories);
         for (Category category : categoriesWithoutChildren) {
             String currentUrl = rules.getShop().getUrl() + category.getHref();
-            try {
-                Document pageDOM = getPageDOM(currentUrl);
-                Elements links = pageDOM.body().select(rules.getSelector());
-                for (Element link : links) {
-                    String productName = link.ownText();
-                    String productHref = deleteSlashFromBeginAndEnd(deleteRootUrl(rules.getShop().getUrl(), link.attr("href")));
-                    ProductLink productLink = new ProductLink(productName, productHref, category);
-                    productLinks.add(productLink);
-                }
-                if (productLinks.size() > 10) break;
-            } catch (IOException e) {
-                LOG.debug("Cannot get page with url '{}'", currentUrl, e);
+            if (isNotBlank(rules.getPaginatorTemplate())) {
+                int i = rules.getPaginatorStartPage().intValue();
+                int step = rules.getPaginatorStepChange().intValue();
+                boolean isExcitedNextPage = true;
+                do {
+                    String pageUrl = currentUrl + rules.getPaginatorTemplate().replace("{d}", String.valueOf(i));
+                    isExcitedNextPage = extractProductLinksFromPage(pageUrl, rules, category, productLinks);
+                    i = i + step;
+                } while (isExcitedNextPage);
+
+            } else {
+                extractProductLinksFromPage(currentUrl, rules, category, productLinks);
             }
+            if (isTest) break;
         }
         return productLinks;
     }
 
+    private boolean extractProductLinksFromPage(String pageUrl, RuleExtractProductLink rules, Category category, List<ProductLink> productLinks) {
+        try {
+            Document pageDOM = getPageDOM(pageUrl);
+            Elements links = pageDOM.body().select(rules.getSelector());
+            if (links.size() == 0) return false;
+            for (Element link : links) {
+                String productName = link.ownText();
+                String productHref = deleteSlashFromBeginAndEnd(deleteRootUrl(rules.getShop().getUrl(), link.attr("href")));
+                ProductLink newProductLink = new ProductLink(productName, productHref, category);
 
-    public List<Product> buildProduct(RuleExtractProduct rules, List<ProductLink> links) {
+                for (ProductLink productLink : productLinks) {
+                    if (productLink.getUrl().equals(newProductLink.getUrl())) {
+                        return false;
+                    }
+                }
+
+                productLinks.add(newProductLink);
+            }
+        } catch (IOException e) {
+            LOG.debug("Cannot get page with url '{}'", pageUrl, e);
+            return false;
+        }
+        return true;
+    }
+
+
+    public List<Product> buildProduct(RuleExtractProduct rules, List<ProductLink> links, boolean isTest) {
         List<Product> products = new ArrayList<>();
         for (ProductLink link : links) {
             String currentUrl = rules.getShop().getUrl() + link.getUrl();
@@ -107,7 +135,9 @@ public class ParserService {
                 product.setShop(rules.getShop());
                 product.setStatus(StatusProduct.AVAILABLE);
                 products.add(product);
-                if (products.size() > 10) break;
+                if (isTest) {
+                    if (products.size() > 9) break;
+                }
             } catch (IOException e) {
                 LOG.debug("Cannot get page with url '{}'", currentUrl, e);
             }
@@ -118,46 +148,46 @@ public class ParserService {
     private Category extractCategoryFrom(Element wrap, String rootUrl, Shop shop) {
         Elements elementsByTagA = wrap.getAllElements().select("a");
         Element element = elementsByTagA.get(0);
-        String nameCategory = element.ownText();
+        String nameCategory = deleteHtmlTags(element.text());
         String href = deleteSlashFromBeginAndEnd(deleteRootUrl(rootUrl, element.attr("href")));
         return new Category(nameCategory, deleteSlashFromBeginAndEnd(href), shop);
     }
 
-    private Product extractProductFrom(Element wrapProductDOM, RuleExtractProduct rules, String rootUrl){
+    private Product extractProductFrom(Element wrapProductDOM, RuleExtractProduct rules, String rootUrl) {
         Product product = new Product();
 
-        Optional.ofNullable(wrapProductDOM.select(rules.getSelectorName()))
-            .map(Elements::first)
+        findElement(wrapProductDOM, rules.getSelectorName())
             .ifPresent(element -> product.setName(element.ownText()));
 
-        Optional.ofNullable(wrapProductDOM.select(rules.getSelectorImage()))
-            .map(Elements::first)
+        findElement(wrapProductDOM, rules.getSelectorImage())
             .ifPresent(element -> {
                 String src = deleteSlashFromBeginAndEnd(deleteRootUrl(rootUrl, element.attr("src")));
                 product.setImageUrl(src);
             });
 
-        Optional.ofNullable(wrapProductDOM.select(rules.getSelectorComposition()))
-            .map(Elements::first)
+        findElement(wrapProductDOM, rules.getSelectorComposition())
             .ifPresent(element -> product.setComposition(element.ownText()));
 
-        Optional.ofNullable(wrapProductDOM.select(rules.getSelectorSummary()))
-            .map(Elements::first)
+        findElement(wrapProductDOM, rules.getSelectorSummary())
             .ifPresent(element -> product.setSummary(element.ownText()));
 
-        Optional.ofNullable(wrapProductDOM.select(rules.getSelectorDescription()))
-            .map(Elements::first)
+        findElement(wrapProductDOM, rules.getSelectorDescription())
             .ifPresent(element -> product.setDescription(element.text()));
 
-        Optional.ofNullable(wrapProductDOM.select(rules.getSelectorPrice()))
-            .map(Elements::first)
+        findElement(wrapProductDOM, rules.getSelectorPrice())
             .ifPresent(element -> product.setPrice(convertStrToPrice(element.ownText())));
 
-        Optional.ofNullable(wrapProductDOM.select(rules.getSelectorOldPrice()))
-            .map(Elements::first)
+        findElement(wrapProductDOM, rules.getSelectorOldPrice())
             .ifPresent(element -> product.setOldPrice(convertStrToPrice(element.ownText())));
 
         return product;
+    }
+
+    private Optional<Element> findElement(Element wrapProductDOM, String rules) {
+        return Optional.ofNullable(rules)
+            .filter(StringUtils::isNotBlank)
+            .map(wrapProductDOM::select)
+            .map(Elements::first);
     }
 
 
@@ -184,10 +214,10 @@ public class ParserService {
 
     }*/
 
-    private Long convertStringToPrice(String strPrice){
+    private Long convertStringToPrice(String strPrice) {
         String integerPart;
         String fractionalPart;
-        for (int i = 0; i < strPrice.length(); i++){
+        for (int i = 0; i < strPrice.length(); i++) {
 
         }
         return null;
@@ -231,7 +261,7 @@ public class ParserService {
 
 
     @Transactional
-    public void updateData(){
+    public void updateData() {
         List<Shop> shops = shopRepository.findAvailableShop();
         for (Shop shop : shops) {
             updateDataForShop(shop.getId());
@@ -239,17 +269,17 @@ public class ParserService {
     }
 
     @Transactional
-    public void updateDataForShop(Long id){
+    public void updateDataForShop(Long id) {
         RuleExtractCategories rulesExtractCategories = ruleExtractCategoriesService.getTreeRulesExtractCategoriesBelongsShop(id);
         List<Category> categories = buildCategories(rulesExtractCategories);
         categoryService.updateCategories(categories);
 
         RuleExtractProductLink rulesExtractProductLink = ruleExtractProductLinkService.getRuleBelongsShop(id);
-        List<ProductLink> productLinks = buildProductLinks(rulesExtractProductLink,categories);
+        List<ProductLink> productLinks = buildProductLinks(rulesExtractProductLink, categories, false);
 
 
         RuleExtractProduct ruleExtractProduct = ruleExtractProductService.getRuleBelongsShop(id);
-        List<Product> products = buildProduct(ruleExtractProduct, productLinks);
+        List<Product> products = buildProduct(ruleExtractProduct, productLinks, false);
         productService.updateProduct(products);
     }
 

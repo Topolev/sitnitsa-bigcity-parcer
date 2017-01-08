@@ -70,7 +70,7 @@ public class ParserResource {
         LOG.debug("Extract product links {}", rulesVM);
         List<Category> categories = bigCitySession.get("categories");
         RuleExtractProductLink rules = ruleExtractProductLinkService.convert(rulesVM, new RuleExtractProductLink());
-        List<ProductLink> links = parserService.buildProductLinks(rules, categories);
+        List<ProductLink> links = parserService.buildProductLinks(rules, categories, true);
         bigCitySession.put("productlinks", links);
         return ResponseEntity.ok(links);
     }
@@ -80,7 +80,7 @@ public class ParserResource {
         LOG.debug("Extract products {}", rulesVM);
         List<ProductLink> links = bigCitySession.get("productlinks");
         RuleExtractProduct rules = ruleExtractProductService.convert(rulesVM, new RuleExtractProduct());
-        List<Product> products = parserService.buildProduct(rules, links);
+        List<Product> products = parserService.buildProduct(rules, links, true);
         return ResponseEntity.ok(products);
     }
 
