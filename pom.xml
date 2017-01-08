@@ -569,6 +569,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <mainClass>com.mycompany.myapp.JHipsterExampleApp</mainClass>
                     <executable>true</executable>
                     <fork>true</fork>
                     <!--
