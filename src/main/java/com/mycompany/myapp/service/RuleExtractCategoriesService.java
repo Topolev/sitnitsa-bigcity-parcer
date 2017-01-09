@@ -36,6 +36,17 @@ public class RuleExtractCategoriesService {
         ruleExtractCategoriesRepository.save(rules);
         return rules;
     }
+    public RuleExtractCategories createNewRules(RulesExtractCategoriesVM rulesVM, Shop shop){
+        RuleExtractCategories rules = convert(rulesVM, shop);
+        ruleExtractCategoriesRepository.save(rules);
+        return rules;
+    }
+
+    public void deleteRulesBelongShop(Long id){
+        List<RuleExtractCategories> deletedRules = ruleExtractCategoriesRepository.findAllRulesBelongShop(id);
+        ruleExtractCategoriesRepository.delete(deletedRules);
+    }
+
 
     public RuleExtractCategories createNewRules(RuleExtractCategories rules){
         ruleExtractCategoriesRepository.save(rules);
@@ -43,11 +54,22 @@ public class RuleExtractCategoriesService {
     }
 
 
+
+
+
+
     @Transactional
     public RuleExtractCategories updateRules(RulesExtractCategoriesVM rulesVM){
         List<RuleExtractCategories> deletedRules = ruleExtractCategoriesRepository.findFullRules(rulesVM.getShop().getId());
         ruleExtractCategoriesRepository.delete(deletedRules);
         return createNewRules(rulesVM);
+    }
+
+    @Transactional
+    public RuleExtractCategories updateRules(RulesExtractCategoriesVM rulesVM, Shop shop){
+        List<RuleExtractCategories> deletedRules = ruleExtractCategoriesRepository.findFullRules(rulesVM.getShop().getId());
+        ruleExtractCategoriesRepository.delete(deletedRules);
+        return createNewRules(rulesVM, shop);
     }
 
     @Transactional
@@ -59,9 +81,18 @@ public class RuleExtractCategoriesService {
 
 
 
+    public RuleExtractCategories convert(RulesExtractCategoriesVM rules, Shop shop){
+        return buildTreeRuleExtractCategories(rules, shop);
+    }
+
+
+
     public RuleExtractCategories convert(RulesExtractCategoriesVM rules) {
         Shop shop = shopRepository.findOne(rules.getShop().getId());
+        return buildTreeRuleExtractCategories(rules, shop);
+    }
 
+    private RuleExtractCategories buildTreeRuleExtractCategories(RulesExtractCategoriesVM rules, Shop shop){
         RuleExtractCategories result = null;
         RuleExtractCategories prevCategory = null;
         for (RulesExtractCategoriesVM.RuleLevelCategory levelCategory : rules.getRuleCategories()) {

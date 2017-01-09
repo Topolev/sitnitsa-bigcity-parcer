@@ -11,6 +11,7 @@
         $stateProvider.state('shops', {
             parent: 'page',
             url: '/shops',
+            cache: false,
             data: {
                 authorities: ['ROLE_ADMIN']
             },

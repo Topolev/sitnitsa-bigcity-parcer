@@ -21,6 +21,26 @@ public class RuleExtractProductService {
     }
 
 
+    public RuleExtractProduct createNewRules(RuleExtractProductVM rulesVM, Shop shop){
+        RuleExtractProduct rules = convert(rulesVM, new RuleExtractProduct());
+        rules.setShop(shop);
+        return ruleExtractProductRepository.save(rules);
+    }
+
+
+
+    public void deleteRuleBelongsShop(Long id){
+        RuleExtractProduct rule = ruleExtractProductRepository.findRuleBelongShop(id);
+        ruleExtractProductRepository.delete(rule);
+    }
+
+
+    public RuleExtractProduct updateRules(RuleExtractProductVM rulesVM, Shop shop) {
+        RuleExtractProduct rules = convert(rulesVM, new RuleExtractProduct());
+        rules.setShop(shop);
+        return ruleExtractProductRepository.save(rules);
+    }
+
     public RuleExtractProduct updateRules(RuleExtractProductVM rulesVM){
         RuleExtractProduct rules = ruleExtractProductRepository.findRuleBelongShop(rulesVM.getShop().getId());
         convert(rulesVM, rules);
@@ -29,6 +49,7 @@ public class RuleExtractProductService {
     }
 
     public RuleExtractProduct convert(RuleExtractProductVM source, RuleExtractProduct target){
+        target.setId(source.getId());
 
         for (SelectorProductField selectorField : source.getSelectors()){
             switch (selectorField.getField()){

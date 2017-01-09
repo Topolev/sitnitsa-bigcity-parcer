@@ -11,6 +11,7 @@
         var vm = this;
 
         vm.load = load;
+        vm.createNewShop = createNewShop;
         vm.followToCategories = followToCategories;
         vm.followToProducts = followToProducts;
         vm.followToProduct = followToProduct;
@@ -18,99 +19,132 @@
         vm.followToShops = followToShops;
         vm.makeReport = makeReport;
 
-
+        vm.isNewShop = false;
         vm.page = "SHOP";
 
         vm.isCheckedUrl = false;
         vm.isValidUrl = true;
 
-        vm.shop = {};
-        vm.rulesextractcategories = {};
-        vm.rulesextractproducts = {};
-        vm.rulesextractproduct = {};
+        vm.successUpdateRules = undefined;
+        vm.errorUpdateRules = undefined;
+
+        vm.shop = {
+            name: '',
+            url: ''
+        };
+        vm.ruleExtractCategories = {};
+        vm.ruleExtractProductLink = {
+            selector: "",
+            paginatorTemplate: "",
+            paginatorStartPage: "",
+            paginatorStepChange:""
+        };
+        vm.ruleExtractProduct = {
+            selectorName: "",
+            selectorImage: "",
+            selectorComposition: "",
+            selectorSummary: "",
+            selectorDescription: "",
+            selectorPrice: "",
+            selectorOldPrice: ""
+        };
+
+
+
 
         vm.categories = [];
         vm.productLinks = [];
         vm.products = [];
 
-        vm.load($stateParams.id);
+        if ($stateParams.id == null || $stateParams.id == ''){
+            vm.createNewShop();
+        } else{
+            vm.load($stateParams.id);
+        }
 
+        function createNewShop(){
+            console.log("create new shop");
+            vm.isNewShop = true;
+
+            vm.ruleExtractCategories = [{'selector': ''}];
+        }
 
         function load(id) {
-            $http({
-                method: 'GET',
-                url: '/api/shops/' + id
-            }).then(function (response) {
-                vm.shop = response.data;
-                console.log(vm.shop);
-            }, function () {
-                console.log("Error");
-            });
+                $http({
+                    method: 'GET',
+                    url: '/api/shops/' + id
+                }).then(function (response) {
+                    vm.shop = response.data;
+                    console.log(vm.shop);
+                }, function () {
+                    console.log("Error");
+                });
 
 
-            $http({
-                method: 'GET',
-                url: '/api/ruleExtractCategories/' + id
-            }).then(function (response) {
-                vm.ruleExtractCategories = response.data.ruleCategories;
-                console.log(response.data);
-            }, function () {
-                console.log("Error");
-                vm.ruleExtractCategories = [{'selector': ''}];
-            });
+                $http({
+                    method: 'GET',
+                    url: '/api/ruleExtractCategories/' + id
+                }).then(function (response) {
+                    vm.ruleExtractCategories = response.data.ruleCategories;
+                    console.log(response.data);
+                }, function () {
+                    console.log("Error");
+                    vm.ruleExtractCategories = [{'selector': ''}];
+                });
 
 
-            $http({
-                method: 'GET',
-                url: '/api/ruleExtractProductLink/' + id
-            }).then(function (response) {
-                vm.ruleExtractProductLink = response.data;
-                console.log(vm.ruleExtractProductLink);
-            }, function () {
-                console.log("Error")
-            });
+                $http({
+                    method: 'GET',
+                    url: '/api/ruleExtractProductLink/' + id
+                }).then(function (response) {
+                    vm.ruleExtractProductLink = response.data;
+                    console.log(vm.ruleExtractProductLink);
+                }, function () {
+                    console.log("Error")
+                });
 
 
-             $http({
-             method: 'GET',
-             url: '/api/ruleExtractProduct/' + id
-             }).then(function (response) {
-             vm.ruleExtractProduct = response.data;
+                $http({
+                    method: 'GET',
+                    url: '/api/ruleExtractProduct/' + id
+                }).then(function (response) {
+                    vm.ruleExtractProduct = response.data;
 
-             for (var selector of vm.ruleExtractProduct.selectors){
-                 switch(selector.field){
-                     case "name": {
-                         vm.ruleExtractProduct.selectorName = selector.selector;
-                         break;
-                     }
-                     case "image": {
-                         vm.ruleExtractProduct.selectorImage = selector.selector;
-                         break;
-                     }
-                     case "composition": {
-                         vm.ruleExtractProduct.selectorComposition = selector.selector;
-                         break;
-                     }
-                     case "summary": {
-                         vm.ruleExtractProduct.selectorSummary = selector.selector;
-                     }
-                     case "description": {
-                         vm.ruleExtractProduct.selectorDescription = selector.selector;
-                     }
-                     case "price": {
-                         vm.ruleExtractProduct.selectorPrice = selector.selector;
-                         break;
-                     }
-                     case "oldprice": {
-                         vm.ruleExtractProduct.selectorOldPrice = selector.selector;
-                         break;
-                     }
-                 }
-             }
-             console.log(vm.ruleExtractProduct);
-             }, function () {
-             console.log("Error")
-             });
+                    for (var selector of vm.ruleExtractProduct.selectors) {
+                        switch (selector.field) {
+                            case "name": {
+                                vm.ruleExtractProduct.selectorName = selector.selector;
+                                break;
+                            }
+                            case "image": {
+                                vm.ruleExtractProduct.selectorImage = selector.selector;
+                                break;
+                            }
+                            case "composition": {
+                                vm.ruleExtractProduct.selectorComposition = selector.selector;
+                                break;
+                            }
+                            case "summary": {
+                                vm.ruleExtractProduct.selectorSummary = selector.selector;
+                            }
+                            case "description": {
+                                vm.ruleExtractProduct.selectorDescription = selector.selector;
+                            }
+                            case "price": {
+                                vm.ruleExtractProduct.selectorPrice = selector.selector;
+                                break;
+                            }
+                            case "oldprice": {
+                                vm.ruleExtractProduct.selectorOldPrice = selector.selector;
+                                break;
+                            }
+                        }
+                    }
+                    console.log(vm.ruleExtractProduct);
+                }, function () {
+                    console.log("Error")
+                });
+
         }
 
         function followToShop() {
@@ -128,17 +162,18 @@
 
         vm.addNewCategoryLevel = function () {
             vm.ruleExtractCategories.push({selector: ''});
-        }
+        };
+
         vm.deleteLastCategoryLevel = function () {
             vm.ruleExtractCategories.pop();
-        }
+        };
 
         vm.extractCategories = function () {
             console.log("EXTRACT CATEGORIES");
             var data = {
                 shop: vm.shop,
                 ruleCategories: vm.ruleExtractCategories
-            }
+            };
 
 
             $http({
@@ -153,7 +188,7 @@
                 console.log("Error");
                 vm.categories = [];
             });
-        }
+        };
 
         /*END EXTRACT CATEGORIES*/
 
@@ -161,7 +196,7 @@
         /*EXTRACT PRODUCT LINKS*/
         function followToProducts() {
             vm.page = "PRODUCTS";
-        }
+        };
 
         vm.extractProductLinks = function () {
             $http({
@@ -197,6 +232,7 @@
                 method: 'POST',
                 url: '/api/extractProducts',
                 data: {
+                    id: vm.ruleExtractProduct.id,
                     shop: vm.shop,
                     selectors: [
                         {field: "name", selector: vm.ruleExtractProduct.selectorName},
@@ -225,39 +261,83 @@
             var rulesExtractCategories = {
                 shop: vm.shop,
                 ruleCategories: vm.ruleExtractCategories
-            }
+            };
+
             var ruleExtractProductLink = {
+                id: vm.ruleExtractProductLink.id,
                 shop: vm.shop,
-                selector: vm.ruleExtractProductLink.selector
-            }
+                selector: vm.ruleExtractProductLink.selector,
+                paginatorTemplate: vm.ruleExtractProductLink.paginatorTemplate,
+                paginatorStartPage: vm.ruleExtractProductLink.paginatorStartPage,
+                paginatorStepChange: vm.ruleExtractProductLink.paginatorStepChange
+            };
 
             var ruleExtractProduct = {
+                id: vm.ruleExtractProduct.id,
                 shop: vm.shop,
                 selectors: [
                     {field: "name", selector: vm.ruleExtractProduct.selectorName},
+                    {field: "image", selector: vm.ruleExtractProduct.selectorImage},
+                    {field: "composition", selector: vm.ruleExtractProduct.selectorComposition},
+                    {field: "summary", selector: vm.ruleExtractProduct.selectorSummary},
+                    {field: "description", selector: vm.ruleExtractProduct.selectorDescription},
                     {field: "price", selector: vm.ruleExtractProduct.selectorPrice},
-                    {field: "image", selector: vm.ruleExtractProduct.selectorImage}]
+                    {field: "oldprice", selector: vm.ruleExtractProduct.selectorOldPrice}
+                ]
+            };
+
+
+
+            if (vm.isNewShop){
+                console.log("Save rule");
+
+                console.log(rulesExtractCategories);
+                console.log(ruleExtractProductLink);
+                console.log(ruleExtractProduct);
+
+
+                $http({
+                    method: 'POST',
+                    url: '/api/updateRules',
+                    data: {
+                        shop: vm.shop,
+                        rulesExtractCategories: rulesExtractCategories,
+                        ruleExtractProductLink: ruleExtractProductLink,
+                        ruleExtractProduct: ruleExtractProduct
+                    }
+                }).then(function (response) {
+                    console.log("Success");
+                    console.log(response.data);
+                    vm.products = response.data;
+                    vm.successUpdateRules = true;
+                }, function errorCallback(response) {
+                    console.log("Error");
+                    vm.errorUpdateRules = true;
+                });
+
+            }else{
+                $http({
+                    method: 'PUT',
+                    url: '/api/updateRules',
+                    data: {
+                        shop: vm.shop,
+                        rulesExtractCategories: rulesExtractCategories,
+                        ruleExtractProductLink: ruleExtractProductLink,
+                        ruleExtractProduct: ruleExtractProduct
+                    }
+                }).then(function (response) {
+                    console.log("Success");
+                    console.log(response.data);
+                    vm.products = response.data;
+                    vm.successUpdateRules = true;
+                }, function errorCallback(response) {
+                    console.log("Error");
+                    vm.errorUpdateRules = true;
+                });
             }
 
-            console.log("ATTTTT")
-            console.log(ruleExtractProduct);
 
-            $http({
-                method: 'POST',
-                url: '/api/updateRules',
-                data: {
-                    shop: vm.shop,
-                    rulesExtractCategories: rulesExtractCategories,
-                    ruleExtractProductLink: ruleExtractProductLink,
-                    ruleExtractProduct: ruleExtractProduct
-                }
-            }).then(function (response) {
-                console.log("Success");
-                console.log(response.data);
-                vm.products = response.data;
-            }, function errorCallback(response) {
-                console.log("Error")
-            });
+
 
         }
 

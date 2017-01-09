@@ -3,11 +3,11 @@ package com.mycompany.myapp.web.rest;
 import com.mycompany.myapp.domain.dataparsing.Category;
 import com.mycompany.myapp.domain.dataparsing.Product;
 import com.mycompany.myapp.domain.dataparsing.Shop;
+import com.mycompany.myapp.domain.enums.StatusShop;
 import com.mycompany.myapp.domain.rules.RuleExtractCategories;
 import com.mycompany.myapp.domain.rules.RuleExtractProduct;
 import com.mycompany.myapp.domain.rules.RuleExtractProductLink;
 import com.mycompany.myapp.repository.dataparsing.ShopRepository;
-import com.mycompany.myapp.repository.rules.RuleExtractCategoriesRepository;
 import com.mycompany.myapp.service.*;
 import com.mycompany.myapp.service.bigcity.ProductLink;
 import com.mycompany.myapp.web.rest.entitybigcity.BigCitySession;
@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.OK;
@@ -59,8 +60,15 @@ public class ParserResource {
     @RequestMapping(value = "/extractCategories", method = POST, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity extractCategories(@RequestBody RulesExtractCategoriesVM rulesVM) {
         LOG.debug("Extract categories {}", rulesVM);
-        RuleExtractCategories rules = ruleExtractCategoriesService.convert(rulesVM);
-        List<Category> categories = parserService.buildCategories(rules);
+
+        Shop shop = new Shop();
+        shop.setUrl(rulesVM.getShop().getUrl());
+
+        RuleExtractCategories rules = ruleExtractCategoriesService.convert(rulesVM, shop);
+
+
+
+        List<Category> categories = parserService.buildCategories(rules, shop);
         bigCitySession.put("categories", categories);
         return ResponseEntity.ok(categories);
     }
@@ -86,13 +94,53 @@ public class ParserResource {
 
 
 
+    @Transactional
+    @RequestMapping(value = "/deleteShopAndRules/{id}", method = GET)
+    public ResponseEntity deleteShopAndRules(@PathVariable Long id){
 
+
+        ruleExtractCategoriesService.deleteRulesBelongShop(id);
+        ruleExtractProductLinkService.deleteRuleBelongsShop(id);
+        ruleExtractProductService.deleteRuleBelongsShop(id);
+
+        shopRepository.delete(id);
+
+        return new ResponseEntity(OK);
+    }
+
+
+    @Transactional
+    @RequestMapping(value = "/updateRules", method = PUT)
+    public ResponseEntity updateRules(@RequestBody  WrapAllRulesVM rules){
+
+        Shop shop = new Shop();
+        shop.setId(rules.getShop().getId());
+        shop.setStatus(StatusShop.ACTIVE);
+        shop.setUrl(rules.getShop().getUrl());
+        shop.setName(rules.getShop().getName());
+        shop.setCreatedDate(ZonedDateTime.now());
+        shop = shopRepository.save(shop);
+
+        ruleExtractCategoriesService.updateRules(rules.getRulesExtractCategories(), shop);
+        ruleExtractProductLinkService.updateRules(rules.getRuleExtractProductLink(), shop);
+        ruleExtractProductService.updateRules(rules.getRuleExtractProduct(), shop);
+
+        return new ResponseEntity(OK);
+    }
+
+    @Transactional
     @RequestMapping(value = "/updateRules", method = POST)
     public ResponseEntity saveRules(@RequestBody  WrapAllRulesVM rules){
+        Shop shop = new Shop();
+        shop.setStatus(StatusShop.ACTIVE);
+        shop.setUrl(rules.getShop().getUrl());
+        shop.setName(rules.getShop().getName());
+        shop.setCreatedDate(ZonedDateTime.now());
+        shop = shopRepository.save(shop);
 
-        ruleExtractCategoriesService.updateRules(rules.getRulesExtractCategories());
-        ruleExtractProductLinkService.updateRules(rules.getRuleExtractProductLink());
-        ruleExtractProductService.updateRules(rules.getRuleExtractProduct());
+        ruleExtractCategoriesService.createNewRules(rules.getRulesExtractCategories(), shop);
+        ruleExtractProductLinkService.createNewRules(rules.getRuleExtractProductLink(), shop);
+        ruleExtractProductService.createNewRules(rules.getRuleExtractProduct(), shop);
 
         return new ResponseEntity(OK);
     }

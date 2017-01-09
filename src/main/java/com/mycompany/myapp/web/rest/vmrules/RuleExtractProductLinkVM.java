@@ -8,6 +8,7 @@ import com.mycompany.myapp.web.rest.vmbigcity.ShopVM;
  */
 public class RuleExtractProductLinkVM {
 
+    private Long id;
     private ShopVM shop;
     private String selector;
     private String paginatorTemplate;
@@ -19,11 +20,20 @@ public class RuleExtractProductLinkVM {
     }
 
     public RuleExtractProductLinkVM(RuleExtractProductLink rules) {
+        id = rules.getId();
         shop = new ShopVM(rules.getShop());
         selector = rules.getSelector();
         paginatorTemplate = rules.getPaginatorTemplate();
         paginatorStartPage = rules.getPaginatorStartPage();
         paginatorStepChange = rules.getPaginatorStepChange();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public ShopVM getShop() {
