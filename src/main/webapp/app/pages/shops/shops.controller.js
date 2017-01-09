@@ -15,6 +15,9 @@
         vm.successUpdateData = undefined;
         vm.errorUpdateData = undefined;
 
+        vm.successDeleteShop = undefined;
+        vm.errorDeleteShop = undefined;
+
         vm.load = load;
         vm.showShop = showShop;
 
@@ -67,6 +70,20 @@
                 load();
             }, function() {
                 console.log("Error")
+            });
+        }
+
+        vm.deleteShop = function(id){
+            $http({
+                method: 'GET',
+                url: '/api/deleteShopAndRules/' + id,
+            }).then(function (response) {
+                console.log("Success");
+                vm.successDeleteShop = true;
+                load();
+            }, function() {
+                console.log("Error")
+                vm.errorDeleteShop = true;
             });
         }
 

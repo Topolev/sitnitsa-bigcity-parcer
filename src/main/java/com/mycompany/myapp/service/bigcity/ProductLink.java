@@ -10,13 +10,15 @@ public class ProductLink {
     private String name;
     private String url;
     private Category category;
+    Long priority;
 
     public ProductLink(){}
 
-    public ProductLink(String name, String url, Category category){
+    public ProductLink(String name, String url, Category category, Long priority){
         this.name = name;
         this.url = url;
         this.category = category;
+        this.priority = priority;
     }
 
     public String getName() {
@@ -41,5 +43,13 @@ public class ProductLink {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public Long getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Long priority) {
+        this.priority = priority;
     }
 }

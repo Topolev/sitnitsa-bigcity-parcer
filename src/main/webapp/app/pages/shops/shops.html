@@ -1,9 +1,14 @@
 <div style="padding: 10px 0;">
     <div class="alert alert-success" ng-if="vm.successUpdateData != undefined">Данные обновлены успешно.</div>
     <div class="alert alert-danger"  ng-if="vm.errorUpdateData != undefined">Во время обновления данных произошла ошибка.</div>
+
+    <div class="alert alert-success" ng-if="vm.successDeleteShop != undefined">Магазин удален успешно.</div>
+    <div class="alert alert-danger"  ng-if="vm.errorDeleteShop != undefined">Во время удаления магазина произошла ошибка.</div>
 </div>
 
 <button class="btn btn-default" ng-click="vm.parsingData()">Распарсить данные</button>
+<a class="btn btn-default" href="#/shops/">Создать новый магазин</a>
+
 
 
 <h1>Каталог сайтов, предназначенные для парсинга.</h1>
@@ -48,9 +53,8 @@
 
             </button>
             <button type="submit"
-                    class="btn btn-danger btn-sm">
+                    class="btn btn-danger btn-sm" ng-click="vm.deleteShop(shop.id)">
                 <span class="glyphicon glyphicon-remove-circle"></span>
-
             </button>
         </div>
 
@@ -58,4 +62,5 @@
 </tr>
 </tbody>
 </table>
+
 

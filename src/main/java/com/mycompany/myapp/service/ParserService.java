@@ -53,18 +53,40 @@ public class ParserService {
     private ProductService productService;
 
 
-    public List<Category> buildCategories(RuleExtractCategories rules) {
+    public static class WrapPriority{
+        private Long priority;
+        public WrapPriority(){
+            priority = 1L;
+        }
+
+        public Long getPriority() {
+            return priority;
+        }
+
+        public void setPriority(Long priority) {
+            this.priority = priority;
+        }
+
+        public Long increment(){
+            return priority++;
+        }
+    }
+
+
+    public List<Category> buildCategories(RuleExtractCategories rules, Shop currentShop) {
         List<Category> categories = new ArrayList<>();
-        Shop currentShop = shopRepository.findOne(rules.getShop().getId());
+        //Shop currentShop = shopRepository.findOne(rules.getShop().getId());
+        WrapPriority priority = new WrapPriority();
         RuleExtractCategories currentRule = rules;
         try {
             Document pageDOM = getPageDOM(rules.getShop().getUrl());
             Elements currentCategories = pageDOM.body().select(currentRule.getSelector());
             for (Element wrapCategory : currentCategories) {
                 Category parentCategory = extractCategoryFrom(wrapCategory, rules.getShop().getUrl(), currentShop);
+                parentCategory.setPriority(priority.increment());
                 categories.add(parentCategory);
                 if (currentRule.getChild() != null) {
-                    buildChildrenCategory(wrapCategory, parentCategory, currentRule.getChild(), currentShop);
+                    buildChildrenCategory(wrapCategory, parentCategory, currentRule.getChild(), currentShop, priority);
                 }
             }
         } catch (IOException e) {
@@ -77,6 +99,7 @@ public class ParserService {
     public List<ProductLink> buildProductLinks(RuleExtractProductLink rules, List<Category> categories, boolean isTest) {
         List<ProductLink> productLinks = new ArrayList<>();
         List<Category> categoriesWithoutChildren = categoryService.getCategoriesWithoutChildren(categories);
+        WrapPriority priority = new WrapPriority();
         for (Category category : categoriesWithoutChildren) {
             String currentUrl = rules.getShop().getUrl() + category.getHref();
             if (isNotBlank(rules.getPaginatorTemplate())) {
@@ -85,19 +108,19 @@ public class ParserService {
                 boolean isExcitedNextPage = true;
                 do {
                     String pageUrl = currentUrl + rules.getPaginatorTemplate().replace("{d}", String.valueOf(i));
-                    isExcitedNextPage = extractProductLinksFromPage(pageUrl, rules, category, productLinks);
+                    isExcitedNextPage = extractProductLinksFromPage(pageUrl, rules, category, productLinks, priority);
                     i = i + step;
                 } while (isExcitedNextPage);
 
             } else {
-                extractProductLinksFromPage(currentUrl, rules, category, productLinks);
+                extractProductLinksFromPage(currentUrl, rules, category, productLinks, priority);
             }
             if (isTest) break;
         }
         return productLinks;
     }
 
-    private boolean extractProductLinksFromPage(String pageUrl, RuleExtractProductLink rules, Category category, List<ProductLink> productLinks) {
+    private boolean extractProductLinksFromPage(String pageUrl, RuleExtractProductLink rules, Category category, List<ProductLink> productLinks, WrapPriority priority) {
         try {
             Document pageDOM = getPageDOM(pageUrl);
             Elements links = pageDOM.body().select(rules.getSelector());
@@ -105,7 +128,7 @@ public class ParserService {
             for (Element link : links) {
                 String productName = link.ownText();
                 String productHref = deleteSlashFromBeginAndEnd(deleteRootUrl(rules.getShop().getUrl(), link.attr("href")));
-                ProductLink newProductLink = new ProductLink(productName, productHref, category);
+                ProductLink newProductLink = new ProductLink(productName, productHref, category, priority.increment());
 
                 for (ProductLink productLink : productLinks) {
                     if (productLink.getUrl().equals(newProductLink.getUrl())) {
@@ -134,6 +157,7 @@ public class ParserService {
                 product.setCategory(link.getCategory());
                 product.setShop(rules.getShop());
                 product.setStatus(StatusProduct.AVAILABLE);
+                product.setPriority(link.getPriority());
                 products.add(product);
                 if (isTest) {
                     if (products.size() > 9) break;
@@ -223,16 +247,17 @@ public class ParserService {
         return null;
     }
 
-    private void buildChildrenCategory(Element wrapDOM, Category parentCategory, RuleExtractCategories extractCategoryRule, Shop shop) {
+    private void buildChildrenCategory(Element wrapDOM, Category parentCategory, RuleExtractCategories extractCategoryRule, Shop shop, WrapPriority priority) {
 
         wrapDOM.addClass("test");
         Elements elements = wrapDOM.getAllElements().select(".test >" + extractCategoryRule.getSelector());
         for (Element wrapCategory : elements) {
             Category currentCategory = extractCategoryFrom(wrapCategory, extractCategoryRule.getShop().getUrl(), shop);
+            currentCategory.setPriority(priority.increment());
             currentCategory.setParent(parentCategory);
             parentCategory.addChild(currentCategory);
             if (extractCategoryRule.getChild() != null) {
-                buildChildrenCategory(wrapCategory, currentCategory, extractCategoryRule.getChild(), shop);
+                buildChildrenCategory(wrapCategory, currentCategory, extractCategoryRule.getChild(), shop, priority);
             }
         }
     }
@@ -271,7 +296,10 @@ public class ParserService {
     @Transactional
     public void updateDataForShop(Long id) {
         RuleExtractCategories rulesExtractCategories = ruleExtractCategoriesService.getTreeRulesExtractCategoriesBelongsShop(id);
-        List<Category> categories = buildCategories(rulesExtractCategories);
+
+        Shop currentShop = shopRepository.findOne(id);
+
+        List<Category> categories = buildCategories(rulesExtractCategories, currentShop);
         categoryService.updateCategories(categories);
 
         RuleExtractProductLink rulesExtractProductLink = ruleExtractProductLinkService.getRuleBelongsShop(id);

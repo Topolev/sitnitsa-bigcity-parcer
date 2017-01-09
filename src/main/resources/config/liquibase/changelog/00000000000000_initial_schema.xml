@@ -30,12 +30,8 @@
             <column name="status" type="ENUM('ACTIVE', 'INACTIVE')" defaultValue="ACTIVE">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_date" type="timestamp" defaultValueDate="${now}">
-                <constraints nullable="false"/>
-            </column>
-            <column name="updated_date" type="timestamp">
-                <constraints nullable="true"/>
-            </column>
+            <column name="created_date" type="timestamp" defaultValueDate="${now}"/>
+            <column name="updated_date" type="timestamp"/>
         </createTable>
         <loadData encoding="UTF-8"
                   file="config/liquibase/shops.csv"
@@ -84,21 +80,7 @@
                   tableName="rule_extract_product_link"/>
         <!--END RULES EXTRACT CATEGORIES-->
 
-        <!--RULES EXTRACT PRODUCTS-->
-        <createTable tableName="rules_extract_products">
-            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="selector" type="varchar(255)"/>
-            <column name="shop_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <loadData encoding="UTF-8"
-                  file="config/liquibase/rulesExtractProducts.csv"
-                  separator=";"
-                  tableName="rules_extract_products"/>
-        <!--END RULES EXTRACT PRODUCTS-->
+
 
         <!--RULES EXTRACT FIELDS OF PRODUCT-->
         <createTable tableName="rules_extract_product">

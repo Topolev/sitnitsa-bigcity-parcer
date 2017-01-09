@@ -13,6 +13,7 @@ import java.util.List;
  */
 public class RuleExtractProductVM {
 
+    private Long id;
     private ShopVM shop;
     private List<SelectorProductField> selectors;
 
@@ -20,6 +21,9 @@ public class RuleExtractProductVM {
     }
 
     public RuleExtractProductVM(RuleExtractProduct rules) {
+        id = rules.getId();
+        shop = new ShopVM(rules.getShop());
+
         selectors = new ArrayList<>();
 
         for (ProductFields field : ProductFields.values()) {
@@ -57,6 +61,13 @@ public class RuleExtractProductVM {
     }
 
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public ShopVM getShop() {
         return shop;

@@ -4,28 +4,27 @@
     <!--ADD URL FOR SHOP-->
     <div ng-if="vm.page == 'SHOP'">
         <h1>01. Основные параметры магазина</h1>
-        <div class="form-group"
-             ng-class="{'has-success' : (vm.isCheckedUrl && vm.isValidUrl), 'has-error': (vm.isCheckedUrl && !vm.isValidUrl) }">
-            <label class="control-label">URL магазина:</label>
-            <div class="row">
-                <div class="col-md-5">
+
+        <div class="row">
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label class="control-label">URL магазина:</label>
                     <input type="text" class="form-control" ng-model="vm.shop.url">
-                    <div ng-if="(vm.isCheckedUrl && vm.isValidUrl)" class="help-block">
-                        Данная страница доступна.
-                    </div>
-                    <div ng-if="(vm.isCheckedUrl && !vm.isValidUrl)" class="help-block">
-                        Данная страница не доступна или не корректная ссылка.
-                    </div>
-                    <div class="set-buttons">
-                        <button class="btn btn-default" ng-click="vm.followToShops()">Назад</button>
-                        <button class="btn btn-default" ng-click="vm.followToCategories()">Далее</button>
-                    </div>
                 </div>
-                <div class="col-md-2">
-                    <button class="btn btn-default" ng-click="vm.checkUrl()">Check</button>
+                <div class="form-group">
+                    <label class="control-label">Имя магазина</label>
+                    <input type="text" class="form-control" ng-model="vm.shop.name">
                 </div>
-                <div class="col-md-5">
+                <div class="set-buttons">
+                    <button class="btn btn-default" ng-click="vm.followToShops()">Назад</button>
+                    <button class="btn btn-default" ng-click="vm.followToCategories()">Далее</button>
                 </div>
+            </div>
+
+            <div class="col-md-2">
+                <!-- <button class="btn btn-default" ng-click="vm.checkUrl()">Check</button>-->
+            </div>
+            <div class="col-md-5">
             </div>
         </div>
     </div>
@@ -105,19 +104,22 @@
                     <div class="form-group">
                         <label class="col-sm-5 control-label">Шаблон пагинатора</label>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control" ng-model="vm.ruleExtractProductLink.paginatorTemplate">
+                            <input type="text" class="form-control"
+                                   ng-model="vm.ruleExtractProductLink.paginatorTemplate">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-5 control-label">Селектор для вычисления количества страниц пагинатора</label>
+                        <label class="col-sm-5 control-label">Начальное значение изменяемой части пагинатора</label>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control" ng-model="vm.ruleExtractProductLink.paginatorStartPage">
+                            <input type="text" class="form-control"
+                                   ng-model="vm.ruleExtractProductLink.paginatorStartPage">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-5 control-label">Селектор для вычисления количества страниц пагинатора</label>
+                        <label class="col-sm-5 control-label">Шаг изменения изменяемой части пагинатора</label>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control" ng-model="vm.ruleExtractProductLink.paginatorStepChange">
+                            <input type="text" class="form-control"
+                                   ng-model="vm.ruleExtractProductLink.paginatorStepChange">
                         </div>
                     </div>
                 </div>
@@ -175,6 +177,11 @@
 
     <div ng-if="vm.page == 'PRODUCT'">
         <h1>04. Параметры для извлечения полей товара</h1>
+        <div style="padding: 10px 0;">
+            <div class="alert alert-success" ng-if="vm.successUpdateRules != undefined">Правила для парсинга сохранены успешно.</div>
+            <div class="alert alert-danger"  ng-if="vm.errorUpdateRules != undefined">Во время сохранения правил для парсинга произошла ошибка.</div>
+        </div>
+
         <div class="row">
             <div class="col-md-6">
 
@@ -185,7 +192,7 @@
                             <input type="text" class="form-control" ng-model="vm.ruleExtractProduct.selectorName">
                         </div>
                         <div class="col-md-2">
-                            <button class="btn btn-default" ng-click="vm.extractProduct()">Check</button>
+                            <!-- <button class="btn btn-default" ng-click="vm.extractProduct()">Check</button>-->
                         </div>
                     </div>
                 </div>
@@ -206,7 +213,8 @@
                     <label class="control-label">Селектор для извлечения COMPOSITION товара:</label>
                     <div class="row">
                         <div class="col-md-10">
-                            <input type="text" class="form-control" ng-model="vm.ruleExtractProduct.selectorComposition">
+                            <input type="text" class="form-control"
+                                   ng-model="vm.ruleExtractProduct.selectorComposition">
                         </div>
                         <div class="col-md-2">
                         </div>
@@ -228,7 +236,8 @@
                     <label class="control-label">Селектор для извлечения DESCRIPTION товара:</label>
                     <div class="row">
                         <div class="col-md-10">
-                            <input type="text" class="form-control" ng-model="vm.ruleExtractProduct.selectorDescription">
+                            <input type="text" class="form-control"
+                                   ng-model="vm.ruleExtractProduct.selectorDescription">
                         </div>
                         <div class="col-md-2">
                         </div>
@@ -256,7 +265,6 @@
                         </div>
                     </div>
                 </div>
-
 
 
                 <div class="set-buttons">
