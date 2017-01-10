@@ -183,9 +183,12 @@ public class ParserService {
         findElement(wrapProductDOM, rules.getSelectorName())
             .ifPresent(element -> product.setName(element.ownText()));
 
+
         findElement(wrapProductDOM, rules.getSelectorImage())
             .ifPresent(element -> {
-                String src = deleteSlashFromBeginAndEnd(deleteRootUrl(rootUrl, element.attr("src")));
+                //String src = deleteSlashFromBeginAndEnd(deleteRootUrl(rootUrl, element.attr("src")));
+                String src = element.attr("src").equals("") ? element.attr("href") : element.attr("src");
+                src = deleteSlashFromBeginAndEnd(deleteRootUrl(rootUrl, src));
                 product.setImageUrl(src);
             });
 

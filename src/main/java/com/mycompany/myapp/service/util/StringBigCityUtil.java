@@ -24,7 +24,7 @@ public class StringBigCityUtil {
         if (str.indexOf(FORWARD_SLASH) == 0){
             str.deleteCharAt(0);
         }
-        if (str.lastIndexOf(FORWARD_SLASH) == (str.length()-1)){
+        if ((str.lastIndexOf(FORWARD_SLASH) == (str.length()-1))&&(str.length()!=0)){
             str.deleteCharAt(str.length()-1);
         }
         return str.toString();

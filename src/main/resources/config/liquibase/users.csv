@@ -1,3 +1,2 @@
 id;login;password_hash;first_name;last_name;email;activated;lang_key;created_by;last_modified_by
 1;sitnitsa;$2a$10$e29nfvDFRgPyLl7CmdMCjuRL9ri4hRP.7UszfWY5rSgn3m7CjC0zG;Александр;Ситница;sitnitsa@bigcity.by;true;en;system;system
-
