@@ -12,4 +12,7 @@ public interface ShopRepository extends JpaRepository<Shop, Long> {
     @Query(value = "select shop from Shop shop where shop.status = 'ACTIVE'")
     List<Shop> findAvailableShop();
 
+    @Query(value = "select shop from Shop shop where shop.idUrl = ?1")
+    Shop findShopByUrlId(Long idUrl);
+
 }

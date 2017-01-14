@@ -17,6 +17,9 @@ public class Shop implements Serializable{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(name = "id_url")
+    private Long idUrl;
+
     @Column(name = "name")
     private String name;
 
@@ -83,5 +86,13 @@ public class Shop implements Serializable{
 
     public void setUpdatedDate(ZonedDateTime updatedDate) {
         this.updatedDate = updatedDate;
+    }
+
+    public Long getIdUrl() {
+        return idUrl;
+    }
+
+    public void setIdUrl(Long idUrl) {
+        this.idUrl = idUrl;
     }
 }

@@ -11,6 +11,7 @@ import java.time.ZonedDateTime;
 public class ShopVM {
 
     private Long id;
+    private Long idUrl;
     private String name;
     private String url;
     private StatusShop status;
@@ -21,11 +22,12 @@ public class ShopVM {
     public ShopVM(){}
 
     public ShopVM(Shop shop){
-        this(shop.getId(), shop.getName(), shop.getUrl(), shop.getStatus(), shop.getCreatedDate(), shop.getUpdatedDate());
+        this(shop.getId(), shop.getIdUrl(), shop.getName(), shop.getUrl(), shop.getStatus(), shop.getCreatedDate(), shop.getUpdatedDate());
     }
 
-    public ShopVM(Long id, String name, String url, StatusShop status, ZonedDateTime createdDate, ZonedDateTime updatedDate){
+    public ShopVM(Long id, Long idUrl, String name, String url, StatusShop status, ZonedDateTime createdDate, ZonedDateTime updatedDate){
         this.id = id;
+        this.idUrl = idUrl;
         this.name = name;
         this.url = url;
         this.status = status;
@@ -89,5 +91,13 @@ public class ShopVM {
 
     public void setUrlToGetShopInfo(String urlToGetShopInfo) {
         this.urlToGetShopInfo = urlToGetShopInfo;
+    }
+
+    public Long getIdUrl() {
+        return idUrl;
+    }
+
+    public void setIdUrl(Long idUrl) {
+        this.idUrl = idUrl;
     }
 }

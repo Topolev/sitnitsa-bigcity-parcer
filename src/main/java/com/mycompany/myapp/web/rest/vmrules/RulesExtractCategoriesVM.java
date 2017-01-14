@@ -10,6 +10,8 @@ import java.util.List;
 public class RulesExtractCategoriesVM {
 
     private ShopVM shop;
+
+    private String prefix;
     private List<RuleLevelCategory> ruleCategories;
 
     public RulesExtractCategoriesVM(){}

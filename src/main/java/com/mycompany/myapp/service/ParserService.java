@@ -30,7 +30,6 @@ import java.util.*;
 import static com.mycompany.myapp.service.util.ExternalPageUtil.*;
 import static com.mycompany.myapp.service.util.StringBigCityUtil.*;
 import static com.mycompany.myapp.service.util.StringBigCityUtil.deleteRootUrl;
-import static com.mycompany.myapp.service.util.StringBigCityUtil.deleteSlashFromBeginAndEnd;
 import static org.apache.commons.lang3.StringUtils.*;
 
 @Service
@@ -127,7 +126,7 @@ public class ParserService {
             if (links.size() == 0) return false;
             for (Element link : links) {
                 String productName = link.ownText();
-                String productHref = deleteSlashFromBeginAndEnd(deleteRootUrl(rules.getShop().getUrl(), link.attr("href")));
+                String productHref = deleteSlashFromBegin(deleteRootUrl(rules.getShop().getUrl(), link.attr("href")));
                 ProductLink newProductLink = new ProductLink(productName, productHref, category, priority.increment());
 
                 for (ProductLink productLink : productLinks) {
@@ -173,8 +172,8 @@ public class ParserService {
         Elements elementsByTagA = wrap.getAllElements().select("a");
         Element element = elementsByTagA.get(0);
         String nameCategory = deleteHtmlTags(element.text());
-        String href = deleteSlashFromBeginAndEnd(deleteRootUrl(rootUrl, element.attr("href")));
-        return new Category(nameCategory, deleteSlashFromBeginAndEnd(href), shop);
+        String href = deleteSlashFromBegin(deleteRootUrl(rootUrl, element.attr("href")));
+        return new Category(nameCategory, deleteSlashFromBegin(href), shop);
     }
 
     private Product extractProductFrom(Element wrapProductDOM, RuleExtractProduct rules, String rootUrl) {
@@ -188,7 +187,7 @@ public class ParserService {
             .ifPresent(element -> {
                 //String src = deleteSlashFromBeginAndEnd(deleteRootUrl(rootUrl, element.attr("src")));
                 String src = element.attr("src").equals("") ? element.attr("href") : element.attr("src");
-                src = deleteSlashFromBeginAndEnd(deleteRootUrl(rootUrl, src));
+                src = deleteSlashFromBegin(deleteRootUrl(rootUrl, src));
                 product.setImageUrl(src);
             });
 

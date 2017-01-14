@@ -115,6 +115,7 @@ public class ParserResource {
 
         Shop shop = new Shop();
         shop.setId(rules.getShop().getId());
+        shop.setIdUrl(rules.getShop().getIdUrl());
         shop.setStatus(StatusShop.ACTIVE);
         shop.setUrl(rules.getShop().getUrl());
         shop.setName(rules.getShop().getName());
@@ -132,6 +133,7 @@ public class ParserResource {
     @RequestMapping(value = "/updateRules", method = POST)
     public ResponseEntity saveRules(@RequestBody  WrapAllRulesVM rules){
         Shop shop = new Shop();
+        shop.setIdUrl(rules.getShop().getIdUrl());
         shop.setStatus(StatusShop.ACTIVE);
         shop.setUrl(rules.getShop().getUrl());
         shop.setName(rules.getShop().getName());

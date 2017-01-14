@@ -37,17 +37,17 @@ public class BigCityResource {
 
     @RequestMapping(value = "/infoShop/{id}", method = GET, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity extractCategories(@PathVariable Long id) {
-        Shop shop = shopRepository.findOne(id);
+        Shop shop = shopRepository.findShopByUrlId(id);
 
         if (shop == null || shop.getStatus() == StatusShop.INACTIVE){
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
 
-        List<CategoryFormatBigCityVM> categories = categoryService.getCategoriesBelongsShop(id).stream()
+        List<CategoryFormatBigCityVM> categories = categoryService.getCategoriesBelongsShop(shop.getId()).stream()
             .map(CategoryFormatBigCityVM::new)
             .collect(toList());
 
-        List<ProductFormatBigCityVM> products = productRepository.findProductsByShop(id).stream()
+        List<ProductFormatBigCityVM> products = productRepository.findProductsByShop(shop.getId()).stream()
             .map(ProductFormatBigCityVM::new)
             .collect(toList());
 

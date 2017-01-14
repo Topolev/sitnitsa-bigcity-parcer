@@ -42,6 +42,7 @@
         vm.ruleExtractProduct = {
             selectorName: "",
             selectorImage: "",
+            attributeImage: "",
             selectorComposition: "",
             selectorSummary: "",
             selectorDescription: "",
@@ -118,6 +119,10 @@
                             }
                             case "image": {
                                 vm.ruleExtractProduct.selectorImage = selector.selector;
+                                break;
+                            }
+                            case "attrimage":{
+                                vm.ruleExtractProduct.attributeImage = selector.selector;
                                 break;
                             }
                             case "composition": {

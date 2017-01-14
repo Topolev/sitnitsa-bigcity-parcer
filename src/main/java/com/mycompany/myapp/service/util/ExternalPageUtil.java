@@ -20,6 +20,7 @@ public class ExternalPageUtil {
     private static final Logger LOG = LoggerFactory.getLogger(ExternalPageUtil.class);
 
     private static String getEncodingPage(HttpURLConnection connection){
+        if (connection.getContentType() == null) return "UTF8";
         return connection.getContentType().replaceFirst(".+charset\\s*=\\s*", "");
     }
 

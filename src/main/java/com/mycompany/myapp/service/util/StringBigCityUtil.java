@@ -19,6 +19,15 @@ public class StringBigCityUtil {
 
     public static final String FORWARD_SLASH = "/";
 
+    public static String deleteSlashFromBegin(String url){
+        StringBuilder str = new StringBuilder(url == null ? "" : url.trim());
+        if (str.indexOf(FORWARD_SLASH) == 0){
+            str.deleteCharAt(0);
+        }
+        return str.toString();
+    }
+
+/*
     public static String deleteSlashFromBeginAndEnd(String url){
         StringBuilder str = new StringBuilder(url == null? "" : url.trim());
         if (str.indexOf(FORWARD_SLASH) == 0){
@@ -28,7 +37,7 @@ public class StringBigCityUtil {
             str.deleteCharAt(str.length()-1);
         }
         return str.toString();
-    }
+    }*/
 
     public static String deleteHtmlTags(String text){
         return text.replaceAll("<[a-zA-Z\\s/]+>", "");
