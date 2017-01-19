@@ -97,10 +97,10 @@ public class RuleExtractCategoriesService {
         RuleExtractCategories prevCategory = null;
         for (RulesExtractCategoriesVM.RuleLevelCategory levelCategory : rules.getRuleCategories()) {
             if (result == null) {
-                result = new RuleExtractCategories(levelCategory.getSelector(), shop);
+                result = new RuleExtractCategories(levelCategory.getSelector(), levelCategory.getPrefix(), shop);
                 prevCategory = result;
             } else {
-                RuleExtractCategories currentCategory = new RuleExtractCategories(levelCategory.getSelector(),shop);
+                RuleExtractCategories currentCategory = new RuleExtractCategories(levelCategory.getSelector(), levelCategory.getPrefix(), shop);
                 currentCategory.setParent(prevCategory);
                 prevCategory.setChild(currentCategory);
                 prevCategory = currentCategory;

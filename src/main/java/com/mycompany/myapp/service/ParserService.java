@@ -74,11 +74,10 @@ public class ParserService {
 
     public List<Category> buildCategories(RuleExtractCategories rules, Shop currentShop) {
         List<Category> categories = new ArrayList<>();
-        //Shop currentShop = shopRepository.findOne(rules.getShop().getId());
         WrapPriority priority = new WrapPriority();
         RuleExtractCategories currentRule = rules;
         try {
-            Document pageDOM = getPageDOM(rules.getShop().getUrl());
+            Document pageDOM = getPageDOM(rules.getShop().getUrl() + (rules.getPrefix() == null ? "": rules.getPrefix()));
             Elements currentCategories = pageDOM.body().select(currentRule.getSelector());
             for (Element wrapCategory : currentCategories) {
                 Category parentCategory = extractCategoryFrom(wrapCategory, rules.getShop().getUrl(), currentShop);
@@ -272,12 +271,12 @@ public class ParserService {
             if (result == null) {
                 Shop shop = new Shop();
                 shop.setUrl(rules.getShop().getUrl());
-                result = new RuleExtractCategories(levelCategory.getSelector(), shop);
+                result = new RuleExtractCategories(levelCategory.getSelector(), levelCategory.getPrefix(), shop);
                 prevCategory = result;
             } else {
                 Shop shop = new Shop();
                 shop.setUrl(rules.getShop().getUrl());
-                RuleExtractCategories currentCategory = new RuleExtractCategories(levelCategory.getSelector(), shop);
+                RuleExtractCategories currentCategory = new RuleExtractCategories(levelCategory.getSelector(), levelCategory.getPrefix(), shop);
                 currentCategory.setParent(prevCategory);
                 prevCategory.setChild(currentCategory);
                 prevCategory = currentCategory;

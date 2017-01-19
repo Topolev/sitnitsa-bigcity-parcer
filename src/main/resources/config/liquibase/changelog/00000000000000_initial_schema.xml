@@ -57,6 +57,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="selector" type="varchar(255)"/>
+            <column name="prefix" type="varchar(255)"/>
             <column name="parent_id" type="bigint"/>
             <column name="shop_id" type="bigint">
                 <constraints nullable="false"/>

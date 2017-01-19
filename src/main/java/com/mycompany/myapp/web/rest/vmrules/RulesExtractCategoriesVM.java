@@ -11,7 +11,7 @@ public class RulesExtractCategoriesVM {
 
     private ShopVM shop;
 
-    private String prefix;
+
     private List<RuleLevelCategory> ruleCategories;
 
     public RulesExtractCategoriesVM(){}
@@ -30,11 +30,17 @@ public class RulesExtractCategoriesVM {
 
     public static class RuleLevelCategory {
         private String selector;
+        private String prefix;
 
         public RuleLevelCategory(){}
 
         public RuleLevelCategory(String selector){
             this.selector = selector;
+        }
+
+        public RuleLevelCategory(String selector, String prefix){
+            this.selector = selector;
+            this.prefix = prefix;
         }
 
         public String getSelector() {
@@ -43,6 +49,14 @@ public class RulesExtractCategoriesVM {
 
         public void setSelector(String selector) {
             this.selector = selector;
+        }
+
+        public String getPrefix() {
+            return prefix;
+        }
+
+        public void setPrefix(String prefix) {
+            this.prefix = prefix;
         }
     }
 
@@ -61,4 +75,5 @@ public class RulesExtractCategoriesVM {
     public void setRuleCategories(List<RuleLevelCategory> ruleCategories) {
         this.ruleCategories = ruleCategories;
     }
+
 }

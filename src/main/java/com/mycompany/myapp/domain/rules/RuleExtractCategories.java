@@ -15,6 +15,9 @@ public class RuleExtractCategories {
     @Column(name = "selector")
     private String selector;
 
+    @Column(name = "prefix")
+    private String prefix;
+
 
     @OneToOne
     @JoinColumn(name = "parent_id")
@@ -39,8 +42,9 @@ public class RuleExtractCategories {
 
 
 
-    public RuleExtractCategories(String selector, Shop shop) {
+    public RuleExtractCategories(String selector, String prefix, Shop shop) {
         this.selector = selector;
+        this.prefix = prefix;
         this.shop = shop;
     }
 
@@ -82,5 +86,13 @@ public class RuleExtractCategories {
 
     public void setShop(Shop shop) {
         this.shop = shop;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 }
