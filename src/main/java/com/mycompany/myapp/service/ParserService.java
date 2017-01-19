@@ -52,9 +52,10 @@ public class ParserService {
     private ProductService productService;
 
 
-    public static class WrapPriority{
+    public static class WrapPriority {
         private Long priority;
-        public WrapPriority(){
+
+        public WrapPriority() {
             priority = 1L;
         }
 
@@ -66,7 +67,7 @@ public class ParserService {
             this.priority = priority;
         }
 
-        public Long increment(){
+        public Long increment() {
             return priority++;
         }
     }
@@ -77,14 +78,16 @@ public class ParserService {
         WrapPriority priority = new WrapPriority();
         RuleExtractCategories currentRule = rules;
         try {
-            Document pageDOM = getPageDOM(rules.getShop().getUrl() + (rules.getPrefix() == null ? "": rules.getPrefix()));
+            Document pageDOM = getPageDOM(rules.getShop().getUrl() + (rules.getPrefix() == null ? "" : rules.getPrefix()));
             Elements currentCategories = pageDOM.body().select(currentRule.getSelector());
             for (Element wrapCategory : currentCategories) {
                 Category parentCategory = extractCategoryFrom(wrapCategory, rules.getShop().getUrl(), currentShop);
-                parentCategory.setPriority(priority.increment());
-                categories.add(parentCategory);
-                if (currentRule.getChild() != null) {
-                    buildChildrenCategory(wrapCategory, parentCategory, currentRule.getChild(), currentShop, priority);
+                if (parentCategory != null){
+                    parentCategory.setPriority(priority.increment());
+                    categories.add(parentCategory);
+                    if (currentRule.getChild() != null) {
+                        buildChildrenCategory(wrapCategory, parentCategory, currentRule.getChild(), currentShop, priority);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -169,6 +172,7 @@ public class ParserService {
 
     private Category extractCategoryFrom(Element wrap, String rootUrl, Shop shop) {
         Elements elementsByTagA = wrap.getAllElements().select("a");
+        if (elementsByTagA.size() == 0) return null;
         Element element = elementsByTagA.get(0);
         String nameCategory = deleteHtmlTags(element.text());
         String href = deleteSlashFromBegin(deleteRootUrl(rootUrl, element.attr("href")));
@@ -251,14 +255,16 @@ public class ParserService {
     private void buildChildrenCategory(Element wrapDOM, Category parentCategory, RuleExtractCategories extractCategoryRule, Shop shop, WrapPriority priority) {
 
         wrapDOM.addClass("test");
-        Elements elements = wrapDOM.getAllElements().select(".test >" + extractCategoryRule.getSelector());
+        Elements elements = wrapDOM.getAllElements().select(".test > " + extractCategoryRule.getSelector());
         for (Element wrapCategory : elements) {
             Category currentCategory = extractCategoryFrom(wrapCategory, extractCategoryRule.getShop().getUrl(), shop);
-            currentCategory.setPriority(priority.increment());
-            currentCategory.setParent(parentCategory);
-            parentCategory.addChild(currentCategory);
-            if (extractCategoryRule.getChild() != null) {
-                buildChildrenCategory(wrapCategory, currentCategory, extractCategoryRule.getChild(), shop, priority);
+            if (currentCategory != null) {
+                currentCategory.setPriority(priority.increment());
+                currentCategory.setParent(parentCategory);
+                parentCategory.addChild(currentCategory);
+                if (extractCategoryRule.getChild() != null) {
+                    buildChildrenCategory(wrapCategory, currentCategory, extractCategoryRule.getChild(), shop, priority);
+                }
             }
         }
     }
