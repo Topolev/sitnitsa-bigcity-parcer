@@ -21,7 +21,7 @@ public class RulesExtractCategoriesVM {
         RuleExtractCategories currentLevelRule = ruleExtractCategories;
         shop = new ShopVM(ruleExtractCategories.getShop());
         while(currentLevelRule != null){
-            ruleCategories.add(new RuleLevelCategory(currentLevelRule.getSelector()));
+            ruleCategories.add(new RuleLevelCategory(currentLevelRule.getSelector(), currentLevelRule.getPrefix()));
             currentLevelRule = currentLevelRule.getChild();
         }
     }

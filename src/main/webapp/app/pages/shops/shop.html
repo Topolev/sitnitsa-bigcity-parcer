@@ -347,7 +347,7 @@
                     <div ng-repeat="product in vm.products">
                         <div class="row">
                             <div class="col-md-4">
-                                <img ng-src="{{vm.shop.url + product.imageUrl}}" class="product-image">
+                                <img ng-src="{{product.imageUrl}}" class="product-image">
                             </div>
                             <div class="col-md-8">
                                 <p>Name: {{product.name}}</p>
@@ -355,6 +355,7 @@
                                 <p>Composition: {{product.composition}}</p>
                                 <p>Summary: {{product.summary}}</p>
                                 <p>Descriptiom: {{product.description}}</p>
+                                <p>Status: {{product.status}}</p>
                                 <p>Price: {{product.price}}</p>
                                 <p>Old Price: {{product.oldPrice}}</p>
                                 <p>Category: {{product.category.name}}</p>

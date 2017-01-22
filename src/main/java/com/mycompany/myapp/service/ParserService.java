@@ -26,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.mycompany.myapp.service.util.ExternalPageUtil.*;
 import static com.mycompany.myapp.service.util.StringBigCityUtil.*;
@@ -82,7 +84,7 @@ public class ParserService {
             Elements currentCategories = pageDOM.body().select(currentRule.getSelector());
             for (Element wrapCategory : currentCategories) {
                 Category parentCategory = extractCategoryFrom(wrapCategory, rules.getShop().getUrl(), currentShop);
-                if (parentCategory != null){
+                if (parentCategory != null) {
                     parentCategory.setPriority(priority.increment());
                     categories.add(parentCategory);
                     if (currentRule.getChild() != null) {
@@ -157,7 +159,9 @@ public class ParserService {
                 Product product = extractProductFrom(wrapProduct, rules, rules.getShop().getUrl());
                 product.setCategory(link.getCategory());
                 product.setShop(rules.getShop());
-                product.setStatus(StatusProduct.AVAILABLE);
+                if (product.getStatus() == null) {
+                    product.setStatus(StatusProduct.AVAILABLE);
+                }
                 product.setPriority(link.getPriority());
                 products.add(product);
                 if (isTest) {
@@ -179,6 +183,17 @@ public class ParserService {
         return new Category(nameCategory, deleteSlashFromBegin(href), shop);
     }
 
+    private String extractUrlImageFromStyleBackgroundImage(String style) {
+        Pattern pattern = Pattern.compile("background-image\\s*:\\s*url\\s*[(]\\s*['\"](.*)['\"]");
+        Matcher matcher = pattern.matcher(style);
+
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return "";
+    }
+
+
     private Product extractProductFrom(Element wrapProductDOM, RuleExtractProduct rules, String rootUrl) {
         Product product = new Product();
 
@@ -189,8 +204,18 @@ public class ParserService {
         findElement(wrapProductDOM, rules.getSelectorImage())
             .ifPresent(element -> {
                 //String src = deleteSlashFromBeginAndEnd(deleteRootUrl(rootUrl, element.attr("src")));
-                String src = element.attr("src").equals("") ? element.attr("href") : element.attr("src");
-                src = deleteSlashFromBegin(deleteRootUrl(rootUrl, src));
+                String src;
+                if (isNoneBlank(element.attr("src"))) {
+                    src = element.attr("src");
+                } else if (isNoneBlank(element.attr("href"))) {
+                    src = element.attr("href");
+                } else if (isNoneBlank(element.attr("style"))) {
+                    String style = element.attr("style");
+                    src = extractUrlImageFromStyleBackgroundImage(style);
+                } else {
+                    src = "";
+                }
+                src = addRootRoolIfIsNotExsite(rootUrl, src);
                 product.setImageUrl(src);
             });
 
@@ -204,7 +229,15 @@ public class ParserService {
             .ifPresent(element -> product.setDescription(element.text()));
 
         findElement(wrapProductDOM, rules.getSelectorPrice())
-            .ifPresent(element -> product.setPrice(convertStrToPrice(element.ownText())));
+            .ifPresent(element -> {
+                Long price = convertStrToPrice(element.ownText());
+                if (price == null) {
+                    price = 0L;
+                    product.setStatus(StatusProduct.NOT_AVAILABLE);
+                }
+                product.setPrice(price);
+
+            });
 
         findElement(wrapProductDOM, rules.getSelectorOldPrice())
             .ifPresent(element -> product.setOldPrice(convertStrToPrice(element.ownText())));

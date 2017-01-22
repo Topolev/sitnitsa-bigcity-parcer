@@ -13,5 +13,6 @@ id;selector_name;selector_price;selector_image;selector_composition;selector_sum
 12;.container h1;.price_block:nth-child(2) .price;.slides li a img;;;.detail_text;;12
 13;.title h1;;.slides li a img;;;.card-product__info-text;;13
 14;.text h1;.shk-price;.fancybox img;;;.description;;14
+15;form[name="product"] h1 span;#block_price;.slides>li>a;;;.jshop_prod_description;;15
 
 

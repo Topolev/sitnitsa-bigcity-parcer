@@ -90,6 +90,22 @@ public class Test {
         System.out.println(result);*/
 
 
+        String pattern1 = "test";
+        String pattern2 = "test";
+
+        String text = "   background-image  :       url     (     \"https://static.tildacdn.com/tild3136-3232-4639-b031-323736636361/34.jpg\");";
+
+
+        String regexString = "background-image\\s*:\\s*url\\s*[(]\\s*['\"](.*)['\"]";
+        Pattern pattern = Pattern.compile(regexString);
+        Matcher matcher = pattern.matcher(text);
+
+        while (matcher.find()) {
+            String textInBetween = matcher.group(1);
+            System.out.println(textInBetween);
+            // Since (.*?) is capturing group 1
+            // You can insert match into a List/Collection here
+        }
 
 
 

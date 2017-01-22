@@ -50,12 +50,29 @@ public class StringBigCityUtil {
         return text;
     }
 
+    public static String addRootRoolIfIsNotExsite(String rootUrl, String currentUrl){
+        if (currentUrl.indexOf("http")== -1){
+            currentUrl = deleteSlashFromBegin(currentUrl);
+            currentUrl = rootUrl + currentUrl;
+        }
+        return currentUrl;
+    }
+
+
     public static String deleteRootUrl(String rootUrl, String currentUrl){
         Pattern p = Pattern.compile("^.*" + rootUrl);
         Matcher m = p.matcher(currentUrl);
         if (m.find()){
             currentUrl = currentUrl.substring(m.end());
         }
+
+        rootUrl = rootUrl.replace("http", "https");
+        p = Pattern.compile("^.*" + rootUrl);
+        m = p.matcher(currentUrl);
+        if (m.find()){
+            currentUrl = currentUrl.substring(m.end());
+        }
+
         return currentUrl;
     }
 

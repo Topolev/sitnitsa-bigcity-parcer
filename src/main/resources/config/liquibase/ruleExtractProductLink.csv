@@ -13,5 +13,6 @@ id;selector;paginator_template;paginator_start_page;paginator_step_change;shop_i
 12;.catalog_item .item-title a;?show=100&PAGEN_1={d};1;1;12
 13;.catalog__item>a;/?PAGEN_1={d};1;1;13
 14;.shk-item a:first-child;;null;null;14
+15;.block_product .name a;?start={d};0;9;15
 
 
