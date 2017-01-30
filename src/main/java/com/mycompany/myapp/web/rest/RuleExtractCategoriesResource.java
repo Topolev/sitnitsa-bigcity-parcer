@@ -37,7 +37,7 @@ public class RuleExtractCategoriesResource {
     public ResponseEntity<RulesExtractCategoriesVM> getRules (@PathVariable Long id) {
         LOG.debug("REST request to get RulesExtractCategories for shop with id : {}", id);
 
-        RulesExtractCategoriesVM rules = ruleExtractCategoriesRepository.findFullRules(id).stream()
+        RulesExtractCategoriesVM rules = ruleExtractCategoriesRepository.findAllRulesBelongShop(id).stream()
             .findFirst()
             .map(RulesExtractCategoriesVM::new)
             .orElse(null);

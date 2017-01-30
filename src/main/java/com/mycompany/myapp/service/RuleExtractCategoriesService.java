@@ -1,6 +1,7 @@
 package com.mycompany.myapp.service;
 
 import com.mycompany.myapp.domain.dataparsing.Shop;
+import com.mycompany.myapp.domain.enums.CategoryChildPlace;
 import com.mycompany.myapp.domain.rules.RuleExtractCategories;
 import com.mycompany.myapp.repository.dataparsing.ShopRepository;
 import com.mycompany.myapp.repository.rules.RuleExtractCategoriesRepository;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.List;
+
+import static com.mycompany.myapp.domain.enums.CategoryChildPlace.*;
 
 @Service
 public class RuleExtractCategoriesService {
@@ -60,14 +63,14 @@ public class RuleExtractCategoriesService {
 
     @Transactional
     public RuleExtractCategories updateRules(RulesExtractCategoriesVM rulesVM){
-        List<RuleExtractCategories> deletedRules = ruleExtractCategoriesRepository.findFullRules(rulesVM.getShop().getId());
+        List<RuleExtractCategories> deletedRules = ruleExtractCategoriesRepository.findAllRulesBelongShop(rulesVM.getShop().getId());
         ruleExtractCategoriesRepository.delete(deletedRules);
         return createNewRules(rulesVM);
     }
 
     @Transactional
     public RuleExtractCategories updateRules(RulesExtractCategoriesVM rulesVM, Shop shop){
-        List<RuleExtractCategories> deletedRules = ruleExtractCategoriesRepository.findFullRules(rulesVM.getShop().getId());
+        List<RuleExtractCategories> deletedRules = ruleExtractCategoriesRepository.findAllRulesBelongShop(rulesVM.getShop().getId());
         ruleExtractCategoriesRepository.delete(deletedRules);
         return createNewRules(rulesVM, shop);
     }
@@ -96,11 +99,12 @@ public class RuleExtractCategoriesService {
         RuleExtractCategories result = null;
         RuleExtractCategories prevCategory = null;
         for (RulesExtractCategoriesVM.RuleLevelCategory levelCategory : rules.getRuleCategories()) {
+            CategoryChildPlace childPlace = levelCategory.getChildPlace() == null ? CHILDCATEGORY_INSIDE_PARENTCATEGORY : levelCategory.getChildPlace();
             if (result == null) {
-                result = new RuleExtractCategories(levelCategory.getSelector(), levelCategory.getPrefix(), shop);
+                result = new RuleExtractCategories(levelCategory.getSelector(), levelCategory.getPrefix(), childPlace, shop);
                 prevCategory = result;
             } else {
-                RuleExtractCategories currentCategory = new RuleExtractCategories(levelCategory.getSelector(), levelCategory.getPrefix(), shop);
+                RuleExtractCategories currentCategory = new RuleExtractCategories(levelCategory.getSelector(), levelCategory.getPrefix(),childPlace, shop);
                 currentCategory.setParent(prevCategory);
                 prevCategory.setChild(currentCategory);
                 prevCategory = currentCategory;

@@ -10,9 +10,7 @@ import com.mycompany.myapp.domain.rules.RuleExtractProductLink;
 import com.mycompany.myapp.repository.dataparsing.ShopRepository;
 import com.mycompany.myapp.service.bigcity.ProductLink;
 
-import com.mycompany.myapp.service.util.StringBigCityUtil;
 import com.mycompany.myapp.web.rest.vmrules.RulesExtractCategoriesVM;
-import com.mycompany.myapp.web.rest.vmbigcity.SelectorProductField;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -99,25 +97,32 @@ public class ParserService {
     }
 
 
-    public List<ProductLink> buildProductLinks(RuleExtractProductLink rules, List<Category> categories, boolean isTest) {
+    public List<ProductLink> buildProductLinksForCategory(Category category, RuleExtractProductLink rules, WrapPriority priority){
+        List<ProductLink> productLinks = new ArrayList<>();
+        String currentUrl = rules.getShop().getUrl() + category.getHref();
+        if (isNotBlank(rules.getPaginatorTemplate())) {
+            int i = rules.getPaginatorStartPage().intValue();
+            int step = rules.getPaginatorStepChange().intValue();
+            boolean isExcitedNextPage = true;
+            do {
+                String pageUrl = currentUrl + rules.getPaginatorTemplate().replace("{d}", String.valueOf(i));
+                isExcitedNextPage = extractProductLinksFromPage(pageUrl, rules, category, productLinks, priority);
+                i = i + step;
+            } while (isExcitedNextPage);
+
+        } else {
+            extractProductLinksFromPage(currentUrl, rules, category, productLinks, priority);
+        }
+        return productLinks;
+    }
+
+    public List<ProductLink> buildAllProductLinks(RuleExtractProductLink rules, List<Category> categories, boolean isTest) {
         List<ProductLink> productLinks = new ArrayList<>();
         List<Category> categoriesWithoutChildren = categoryService.getCategoriesWithoutChildren(categories);
         WrapPriority priority = new WrapPriority();
         for (Category category : categoriesWithoutChildren) {
-            String currentUrl = rules.getShop().getUrl() + category.getHref();
-            if (isNotBlank(rules.getPaginatorTemplate())) {
-                int i = rules.getPaginatorStartPage().intValue();
-                int step = rules.getPaginatorStepChange().intValue();
-                boolean isExcitedNextPage = true;
-                do {
-                    String pageUrl = currentUrl + rules.getPaginatorTemplate().replace("{d}", String.valueOf(i));
-                    isExcitedNextPage = extractProductLinksFromPage(pageUrl, rules, category, productLinks, priority);
-                    i = i + step;
-                } while (isExcitedNextPage);
-
-            } else {
-                extractProductLinksFromPage(currentUrl, rules, category, productLinks, priority);
-            }
+            List<ProductLink> productLinksForCategory = buildProductLinksForCategory(category, rules, priority);
+            productLinks.addAll(productLinksForCategory);
             if (isTest) break;
         }
         return productLinks;
@@ -149,26 +154,32 @@ public class ParserService {
     }
 
 
-    public List<Product> buildProduct(RuleExtractProduct rules, List<ProductLink> links, boolean isTest) {
+    public Product buildProduct(ProductLink link, RuleExtractProduct rules){
+        String productUrl = rules.getShop().getUrl() + link.getUrl();
+        Product product = null;
+        try {
+            Document pageDOM = getPageDOM(productUrl);
+            Element wrapProduct = pageDOM.body();
+            product = extractProductFrom(wrapProduct, rules, rules.getShop().getUrl());
+            product.setCategory(link.getCategory());
+            product.setShop(rules.getShop());
+            if (product.getStatus() == null) {
+                product.setStatus(StatusProduct.AVAILABLE);
+            }
+            product.setPriority(link.getPriority());
+        } catch (IOException e) {
+            LOG.debug("Cannot get page with url '{}'", productUrl, e);
+        }
+        return product;
+    }
+
+    public List<Product> buildProducts(RuleExtractProduct rules, List<ProductLink> links, boolean isTest) {
         List<Product> products = new ArrayList<>();
         for (ProductLink link : links) {
-            String currentUrl = rules.getShop().getUrl() + link.getUrl();
-            try {
-                Document pageDOM = getPageDOM(currentUrl);
-                Element wrapProduct = pageDOM.body();
-                Product product = extractProductFrom(wrapProduct, rules, rules.getShop().getUrl());
-                product.setCategory(link.getCategory());
-                product.setShop(rules.getShop());
-                if (product.getStatus() == null) {
-                    product.setStatus(StatusProduct.AVAILABLE);
-                }
-                product.setPriority(link.getPriority());
-                products.add(product);
-                if (isTest) {
-                    if (products.size() > 9) break;
-                }
-            } catch (IOException e) {
-                LOG.debug("Cannot get page with url '{}'", currentUrl, e);
+            Product product = buildProduct(link, rules);
+            products.add(product);
+            if (isTest) {
+                if (products.size() > 9) break;
             }
         }
         return products;
@@ -287,6 +298,41 @@ public class ParserService {
 
     private void buildChildrenCategory(Element wrapDOM, Category parentCategory, RuleExtractCategories extractCategoryRule, Shop shop, WrapPriority priority) {
 
+        switch(extractCategoryRule.getChildPlace()){
+            case CHILDCATEGORY_INSIDE_PARENTCATEGORY:{
+                extractChildrenCategoryPlacedInsideParentCategory(wrapDOM, parentCategory, extractCategoryRule,shop, priority);
+                break;
+            }
+            case CHILDCATEGORY_ON_ANOTHERPAGE:{
+                extractChildrenCategoryPlacedOnAnotherPage(wrapDOM, parentCategory, extractCategoryRule,shop, priority);
+                break;
+            }
+        }
+
+    }
+
+    private void extractChildrenCategoryPlacedOnAnotherPage(Element wrapDOM, Category parentCategory, RuleExtractCategories extractCategoryRule, Shop shop, WrapPriority priority){
+        String currentUrl = shop.getUrl() + parentCategory.getHref();
+        try {
+            Document pageDOM = getPageDOM(currentUrl);
+            Elements elements = pageDOM.select(extractCategoryRule.getSelector());
+            for (Element wrapCategory : elements) {
+                Category currentCategory = extractCategoryFrom(wrapCategory, extractCategoryRule.getShop().getUrl(), shop);
+                if (currentCategory != null) {
+                    currentCategory.setPriority(priority.increment());
+                    currentCategory.setParent(parentCategory);
+                    parentCategory.addChild(currentCategory);
+                    if (extractCategoryRule.getChild() != null) {
+                        buildChildrenCategory(wrapCategory, currentCategory, extractCategoryRule.getChild(), shop, priority);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            LOG.debug("Cannot get page with url '{}'", currentUrl, e);
+        }
+    }
+
+    private void extractChildrenCategoryPlacedInsideParentCategory(Element wrapDOM, Category parentCategory, RuleExtractCategories extractCategoryRule, Shop shop, WrapPriority priority){
         wrapDOM.addClass("test");
         Elements elements = wrapDOM.getAllElements().select(".test > " + extractCategoryRule.getSelector());
         for (Element wrapCategory : elements) {
@@ -310,12 +356,12 @@ public class ParserService {
             if (result == null) {
                 Shop shop = new Shop();
                 shop.setUrl(rules.getShop().getUrl());
-                result = new RuleExtractCategories(levelCategory.getSelector(), levelCategory.getPrefix(), shop);
+                result = new RuleExtractCategories(levelCategory.getSelector(), levelCategory.getPrefix(), levelCategory.getChildPlace(), shop);
                 prevCategory = result;
             } else {
                 Shop shop = new Shop();
                 shop.setUrl(rules.getShop().getUrl());
-                RuleExtractCategories currentCategory = new RuleExtractCategories(levelCategory.getSelector(), levelCategory.getPrefix(), shop);
+                RuleExtractCategories currentCategory = new RuleExtractCategories(levelCategory.getSelector(), levelCategory.getPrefix(),levelCategory.getChildPlace(), shop);
                 currentCategory.setParent(prevCategory);
                 prevCategory.setChild(currentCategory);
                 prevCategory = currentCategory;
@@ -335,19 +381,35 @@ public class ParserService {
 
     @Transactional
     public void updateDataForShop(Long id) {
+        LOG.info("Parsing shop with id {}", id);
         RuleExtractCategories rulesExtractCategories = ruleExtractCategoriesService.getTreeRulesExtractCategoriesBelongsShop(id);
 
         Shop currentShop = shopRepository.findOne(id);
 
         List<Category> categories = buildCategories(rulesExtractCategories, currentShop);
+
         categoryService.updateCategories(categories);
 
         RuleExtractProductLink rulesExtractProductLink = ruleExtractProductLinkService.getRuleBelongsShop(id);
-        List<ProductLink> productLinks = buildProductLinks(rulesExtractProductLink, categories, false);
+
+
+        int totalProductLink  = 0;
+        List<ProductLink> productLinks = new ArrayList<>();
+        for(Category category: categories){
+            List<ProductLink> productLinksCategory = buildProductLinksForCategory(category,rulesExtractProductLink,new WrapPriority());
+            productLinks.addAll(productLinksCategory);
+            totalProductLink += productLinksCategory.size();
+            LOG.info("CATEGORY NAME: {}     TOTAL PRODUCT LINKS: {}",category.getName(), productLinksCategory.size());
+
+        }
+        LOG.info("TOTAL PRODUCT: {}", totalProductLink);
+
+        /*List<ProductLink> productLinks = buildAllProductLinks(rulesExtractProductLink, categories, false);*/
 
 
         RuleExtractProduct ruleExtractProduct = ruleExtractProductService.getRuleBelongsShop(id);
-        List<Product> products = buildProduct(ruleExtractProduct, productLinks, false);
+        List<Product> products = buildProducts(ruleExtractProduct, productLinks, false);
+        LOG.info("!!!!!!!!!!!!!!ATTENTION: {}", products.size());
         productService.updateProduct(products);
     }
 

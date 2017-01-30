@@ -37,19 +37,19 @@
     <div ng-if="vm.page == 'CATEGORIES'">
         <h1>02. Параметры для извлечения категорий</h1>
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-9">
 
 
                 <div class="row form-group" ng-repeat="levelRule in vm.ruleExtractCategories">
                     <div class="col-md-6">
                         <div class="form-horizontal">
-                            <label class="col-md-4 control-label">Уровень {{$index + 1}}: cелектор</label>
-                            <div class="col-md-8">
+                            <label class="col-md-5 control-label">Уровень {{$index + 1}}: cелектор</label>
+                            <div class="col-md-7">
                                 <input type="text" class="form-control" ng-model="levelRule.selector">
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-horizontal">
                             <label class="col-md-4 control-label">префикс</label>
                             <div class="col-md-8">
@@ -57,7 +57,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
+                        <select ng-model="levelRule.childPlace">
+                            <option value = "CHILDCATEGORY_INSIDE_PARENTCATEGORY" ng-selected="levelRule.childPlace=='CHILDCATEGORY_INSIDE_PARENTCATEGORY'">Подкатегория в категории</option>
+                            <option value = "CHILDCATEGORY_IS_SIBLING_PARENTCATEGORY" ng-selected="levelRule.childPlace=='CHILDCATEGORY_IS_SIBLING_PARENTCATEGORY'">Подкатегория - брат категории</option>
+                            <option value = "CHILDCATEGORY_ON_ANOTHERPAGE" ng-selected="levelRule.childPlace=='CHILDCATEGORY_ON_ANOTHERPAGE'">Подкатегория на другой странице</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
                         <button type="button" class="btn btn-default btn-sm"
                                 ng-click="vm.addNewCategoryLevel()">
                             <span class="glyphicon glyphicon-plus"></span>
@@ -104,7 +111,7 @@
             </div>
 
 
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div ng-if="vm.categories.length > 0">
 
                     <ul>
@@ -166,6 +173,24 @@
                     </button>
                     <button class="btn btn-default" ng-click="vm.followToProduct()">Далее</button>
                 </div>
+
+                <br/>
+
+                <div class="form-group">
+                    <label>Ссылка на категорию:</label>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" ng-model="vm.categoryUrl" />
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-default" ng-click="vm.checkProductLinks()">Проверить</button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
 
             </div>
             <div class="col-md-5">
@@ -336,8 +361,22 @@
 
                 <div class="set-buttons">
                     <button class="btn btn-default" ng-click="vm.followToProducts()">Назад</button>
-                    <button class="btn btn-default" ng-click="vm.extractProduct()">Извлечь товары</button>
+                    <button class="btn btn-default" ng-click="vm.extractProducts()">Извлечь товары</button>
                     <button class="btn btn-default" ng-click="vm.saveRules()">Сохранить правила</button>
+                </div>
+
+                <br/>
+
+                <div class="form-group">
+                    <label>Ссылка на продукт:</label>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" ng-model="vm.productUrl" />
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-default" ng-click="vm.checkProduct()">Проверить</button>
+                        </div>
+                    </div>
                 </div>
 
             </div>

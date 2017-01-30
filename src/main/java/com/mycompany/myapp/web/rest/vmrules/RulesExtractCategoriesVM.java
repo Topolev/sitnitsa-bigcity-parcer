@@ -1,6 +1,7 @@
 package com.mycompany.myapp.web.rest.vmrules;
 
 
+import com.mycompany.myapp.domain.enums.CategoryChildPlace;
 import com.mycompany.myapp.domain.rules.RuleExtractCategories;
 import com.mycompany.myapp.web.rest.vmbigcity.ShopVM;
 
@@ -21,7 +22,7 @@ public class RulesExtractCategoriesVM {
         RuleExtractCategories currentLevelRule = ruleExtractCategories;
         shop = new ShopVM(ruleExtractCategories.getShop());
         while(currentLevelRule != null){
-            ruleCategories.add(new RuleLevelCategory(currentLevelRule.getSelector(), currentLevelRule.getPrefix()));
+            ruleCategories.add(new RuleLevelCategory(currentLevelRule.getSelector(), currentLevelRule.getPrefix(), currentLevelRule.getChildPlace()));
             currentLevelRule = currentLevelRule.getChild();
         }
     }
@@ -31,6 +32,7 @@ public class RulesExtractCategoriesVM {
     public static class RuleLevelCategory {
         private String selector;
         private String prefix;
+        private CategoryChildPlace childPlace;
 
         public RuleLevelCategory(){}
 
@@ -38,9 +40,10 @@ public class RulesExtractCategoriesVM {
             this.selector = selector;
         }
 
-        public RuleLevelCategory(String selector, String prefix){
+        public RuleLevelCategory(String selector, String prefix, CategoryChildPlace childPlace){
             this.selector = selector;
             this.prefix = prefix;
+            this.childPlace = childPlace;
         }
 
         public String getSelector() {
@@ -57,6 +60,14 @@ public class RulesExtractCategoriesVM {
 
         public void setPrefix(String prefix) {
             this.prefix = prefix;
+        }
+
+        public CategoryChildPlace getChildPlace() {
+            return childPlace;
+        }
+
+        public void setChildPlace(CategoryChildPlace childPlace) {
+            this.childPlace = childPlace;
         }
     }
 

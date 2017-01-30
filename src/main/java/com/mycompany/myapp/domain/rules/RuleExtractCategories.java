@@ -1,6 +1,7 @@
 package com.mycompany.myapp.domain.rules;
 
 import com.mycompany.myapp.domain.dataparsing.Shop;
+import com.mycompany.myapp.domain.enums.CategoryChildPlace;
 
 import javax.persistence.*;
 
@@ -17,6 +18,10 @@ public class RuleExtractCategories {
 
     @Column(name = "prefix")
     private String prefix;
+
+    @Column(name = "child_place")
+    @Enumerated(value = EnumType.STRING)
+    private CategoryChildPlace childPlace;
 
 
     @OneToOne
@@ -42,10 +47,12 @@ public class RuleExtractCategories {
 
 
 
-    public RuleExtractCategories(String selector, String prefix, Shop shop) {
+    public RuleExtractCategories(String selector, String prefix, CategoryChildPlace childPlace, Shop shop) {
         this.selector = selector;
         this.prefix = prefix;
+        this.childPlace = childPlace;
         this.shop = shop;
+
     }
 
     public Long getId() {
@@ -94,5 +101,13 @@ public class RuleExtractCategories {
 
     public void setPrefix(String prefix) {
         this.prefix = prefix;
+    }
+
+    public CategoryChildPlace getChildPlace() {
+        return childPlace;
+    }
+
+    public void setChildPlace(CategoryChildPlace childPlace) {
+        this.childPlace = childPlace;
     }
 }

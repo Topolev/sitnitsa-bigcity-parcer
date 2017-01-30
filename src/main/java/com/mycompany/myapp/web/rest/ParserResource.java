@@ -11,10 +11,7 @@ import com.mycompany.myapp.repository.dataparsing.ShopRepository;
 import com.mycompany.myapp.service.*;
 import com.mycompany.myapp.service.bigcity.ProductLink;
 import com.mycompany.myapp.web.rest.entitybigcity.BigCitySession;
-import com.mycompany.myapp.web.rest.vmrules.RuleExtractProductLinkVM;
-import com.mycompany.myapp.web.rest.vmrules.RuleExtractProductVM;
-import com.mycompany.myapp.web.rest.vmrules.RulesExtractCategoriesVM;
-import com.mycompany.myapp.web.rest.vmrules.WrapAllRulesVM;
+import com.mycompany.myapp.web.rest.vmrules.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -73,12 +70,24 @@ public class ParserResource {
         return ResponseEntity.ok(categories);
     }
 
+
+
+    @RequestMapping(value = "/extractProductLinksForCategory", method = POST, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity extractAloneProductLinksByHref(@RequestBody WrapRuleExtractProductLinkVM wrapRulesVM){
+
+        RuleExtractProductLink rules = ruleExtractProductLinkService.convert(wrapRulesVM.getRuleExtractProductLink(), new RuleExtractProductLink());
+        List<ProductLink> links = parserService.buildProductLinksForCategory(wrapRulesVM.getCategory(),rules,new ParserService.WrapPriority());
+
+        return ResponseEntity.ok(links);
+    }
+
+
     @RequestMapping(value = "/extractProductLinks", method = POST, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity extractProductLinks(@RequestBody RuleExtractProductLinkVM rulesVM){
         LOG.debug("Extract product links {}", rulesVM);
         List<Category> categories = bigCitySession.get("categories");
         RuleExtractProductLink rules = ruleExtractProductLinkService.convert(rulesVM, new RuleExtractProductLink());
-        List<ProductLink> links = parserService.buildProductLinks(rules, categories, true);
+        List<ProductLink> links = parserService.buildAllProductLinks(rules, categories, true);
         bigCitySession.put("productlinks", links);
         return ResponseEntity.ok(links);
     }
@@ -88,8 +97,20 @@ public class ParserResource {
         LOG.debug("Extract products {}", rulesVM);
         List<ProductLink> links = bigCitySession.get("productlinks");
         RuleExtractProduct rules = ruleExtractProductService.convert(rulesVM, new RuleExtractProduct());
-        List<Product> products = parserService.buildProduct(rules, links, true);
+        List<Product> products = parserService.buildProducts(rules, links, true);
         return ResponseEntity.ok(products);
+    }
+
+
+    @RequestMapping(value = "/extractProduct", method = POST, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity extractAloneProductByHref(@RequestBody WrapRuleExtractProductVM wrapRuleVM){
+        LOG.debug("Extract product on url {}", wrapRuleVM.getLink().getUrl());
+
+
+        RuleExtractProduct rules = ruleExtractProductService.convert(wrapRuleVM.getRuleExtractProduct(), new RuleExtractProduct());
+        Product product = parserService.buildProduct(wrapRuleVM.getLink(), rules);
+
+        return ResponseEntity.ok(product);
     }
 
 
