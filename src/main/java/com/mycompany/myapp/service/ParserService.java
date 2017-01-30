@@ -390,12 +390,13 @@ public class ParserService {
 
         categoryService.updateCategories(categories);
 
+        List<Category> categoriesWithoutChild = categoryService.getCategoriesWithoutChildren(categories);
         RuleExtractProductLink rulesExtractProductLink = ruleExtractProductLinkService.getRuleBelongsShop(id);
 
 
         int totalProductLink  = 0;
         List<ProductLink> productLinks = new ArrayList<>();
-        for(Category category: categories){
+        for(Category category: categoriesWithoutChild){
             List<ProductLink> productLinksCategory = buildProductLinksForCategory(category,rulesExtractProductLink,new WrapPriority());
             productLinks.addAll(productLinksCategory);
             totalProductLink += productLinksCategory.size();
