@@ -3,7 +3,7 @@ id;selector_name;selector_price;selector_image;selector_composition;selector_sum
 2;"form[name=""product""] h1 span";#block_price;.slides>li>a;;;.jshop_prod_description;;2
 3;.text h1;.shk-price;a.fancybox;;;.description;;3
 4;#title;.price_old--mod span:first-child;.tab-content a img;;;.c_element_about p;;4
-5;#title;.price_old--mod span:first-child;.tab-content a img;;;.c_element_about div:nth-child(2);;5
+5;#title;.price_old--mod span:last-child;.tab-content a img;;;.c_element_about div:nth-child(2);;5
 6;#title;.price_old--mod span:first-child;.tab-content a img;;;.c_element_about div:nth-child(2);;6
 7;.product_rightcol h1;#formated_price;.product_leftcol .image a;;;.short_dc + p;;7
 8;.product_title;.product_price;.product_image img;.product_nutrition_s;.product_descr;;;8
@@ -17,4 +17,4 @@ id;selector_name;selector_price;selector_image;selector_composition;selector_sum
 16;.page-header;.view-id-prod_character_price_cart .views-field-commerce-price .field-content;.field-slideshow-wrapper img;;;.view-product-descr-tab .field-content;;16
 17;#content h1 span;.info .price;#product-info .images .img a img;;;.info .desc;;17
 18;article h1 span;span.price;#product-image;;;#product-features;;18
-19;t350__title>div;.t350__price;.t350__carousel__img;;;.t350__descr;;19
+19;.t350__title>div;.t350__price;.t350__carousel__img;;;.t350__descr;;19

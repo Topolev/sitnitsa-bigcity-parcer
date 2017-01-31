@@ -146,8 +146,8 @@
             </column>
             <column name="name" type="varchar(255)"/>
             <column name="image_url" type="varchar(255)"/>
-            <column name="composition" type="varchar(255)"/>
-            <column name="summary" type="varchar(255)"/>
+            <column name="composition" type="text"/>
+            <column name="summary" type="text"/>
             <column name="description" type="text"/>
             <column name="price" type="bigint"/>
             <column name="old_price" type="bigint"/>
