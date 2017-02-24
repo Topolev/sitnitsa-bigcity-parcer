@@ -7,8 +7,10 @@
 
     <include file="classpath:config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/01.xml" relativeToChangelogFile="false"/>
-<!--
-    <include file="classpath:config/liquibase/changelog/00000000000001_initial_schema.xml" relativeToChangelogFile="false"/>-->
+    <include file="classpath:config/liquibase/changelog/201702242149_change_type_field_name_into_Product.xml" relativeToChangelogFile="false"/>
+
+    <!--
+        <include file="classpath:config/liquibase/changelog/00000000000001_initial_schema.xml" relativeToChangelogFile="false"/>-->
 
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
