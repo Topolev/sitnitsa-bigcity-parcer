@@ -166,6 +166,9 @@ public class ParserService {
             if (product.getStatus() == null) {
                 product.setStatus(StatusProduct.AVAILABLE);
             }
+            if (product.getPrice() == null || product.getPrice() == 0L){
+                product.setStatus(StatusProduct.NOT_AVAILABLE);
+            }
             product.setPriority(link.getPriority());
         } catch (IOException e) {
             LOG.debug("Cannot get page with url '{}'", productUrl, e);
