@@ -60,9 +60,9 @@ RUN git clone https://github.com/Topolev/sitnitsa-bigcity-parcer.git && \
     bower install --allow-root && \
     mvn package
 
+ENV ES_JAVA_OPTS="-Xms512m -Xmx512m"
 
 ENTRYPOINT ["/root/startup.sh"]
 
 
-EXPOSE 3306
 EXPOSE 8080
