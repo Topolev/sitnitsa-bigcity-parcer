@@ -54,8 +54,10 @@ RUN sed -i -e "$ a [client]\n\n[mysql]\n\n[mysqld]"  /etc/mysql/my.cnf && \
 COPY ./scripts/startup.sh /root/startup.sh
 RUN chmod +x /root/startup.sh
 
+
 RUN git clone https://github.com/Topolev/sitnitsa-bigcity-parcer.git && \
     cd sitnitsa-bigcity-parcer && \
+    bower install --allow-root && \
     mvn package
 
 

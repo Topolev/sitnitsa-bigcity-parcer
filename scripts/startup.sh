@@ -2,6 +2,7 @@
 set -e
 
 echo "Run MySQL server"
+chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
 service mysql start $ sleep 10
 
 echo "Create project database"
