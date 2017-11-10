@@ -46,13 +46,6 @@ module.exports = function (config) {
             'src/main/webapp/bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
             'src/main/webapp/bower_components/angular-mocks/angular-mocks.js',
             // endbower
-            'src/main/webapp/app/app.module.js',
-            'src/main/webapp/app/app.state.js',
-            'src/main/webapp/app/app.constants.js',
-            'src/main/webapp/app/**/*.+(js|html)',
-            'src/test/javascript/spec/helpers/module.js',
-            'src/test/javascript/spec/helpers/httpBackend.js',
-            'src/test/javascript/**/!(karma.conf).js'
         ],
 
 
