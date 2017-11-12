@@ -1,3 +1,9 @@
+# Dockerfile
+
+    docker build -t big .
+    docker run -p 80:8080 big
+
+
 # JHipsterExample
 
 This application was generated using JHipster 3.11.0, you can find documentation and help at [https://jhipster.github.io/documentation-archive/v3.11.0](https://jhipster.github.io/documentation-archive/v3.11.0).

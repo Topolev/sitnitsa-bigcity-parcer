@@ -58,6 +58,7 @@ RUN chmod +x /root/startup.sh
 RUN git clone https://github.com/Topolev/sitnitsa-bigcity-parcer.git && \
     cd sitnitsa-bigcity-parcer && \
     git checkout RELEASE && \
+    git pull origin RELEASE && \
     bower install --allow-root && \
     mvn package
 
